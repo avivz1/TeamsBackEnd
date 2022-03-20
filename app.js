@@ -8,6 +8,7 @@ var usersRouter = require('./Routers/users');
 var LoginRouter = require('./Routers/LoginRouter');
 var StudentsRouter = require('./Routers/StudentsRouter');
 var TeamsRouter = require('./Routers/TeamsRouter');
+var PracticeRouter = require('./Routers/PracticeRouter');
 
 var app = express();
 let db = require('./Config/dataBase');
@@ -22,5 +23,6 @@ app.use('/users', usersRouter);
 app.use('/login', LoginRouter);
 app.use('/students', StudentsRouter);
 app.use('/teams', TeamsRouter);
+app.use('/practices', PracticeRouter);
 
 module.exports = app;

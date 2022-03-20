@@ -96,7 +96,7 @@ const getStudent = function (id) {
     })
 }
 
-const getStudentsByTeamId = async function (teamId,userId) {
+const getStudentsByTeamId = async function (teamId, userId) {
     let students = await getAllStudentsByUserID(userId);
     let studentsByTeamArr = students.filter(stu => stu.Team_ID == teamId)
     return studentsByTeamArr;
@@ -108,12 +108,12 @@ const deleteFewStudents = async function (studArr) {
         deleteStu.push(deleteStudentById(stu._id));
     })
 
-    const allPromises=Promise.all(deleteStu);
+    const allPromises = Promise.all(deleteStu);
     const list = await allPromises;
 
-    if(list.includes(undefined||false)){
+    if (list.includes(undefined || false)) {
         return false;
-    }else{
+    } else {
         return true;
     }
 
@@ -122,24 +122,48 @@ const deleteFewStudents = async function (studArr) {
 const changeStudentsTeam = async function (teamId, stuArr) {
     students = []
     stuArr.forEach(stu => {
-        students.push(updateStudentTeamID(teamId,stu._id))
+        students.push(updateStudentTeamID(teamId, stu._id))
     })
 
-    const allPromises=Promise.all(students);
+    const allPromises = Promise.all(students);
     const list = await allPromises;
 
-    if(list.includes(undefined||false)){
+    if (list.includes(undefined || false)) {
         return false;
-    }else{
+    } else {
         return true;
     }
 }
-// const addStudentDate = async function (id, date) {
-//     var student = await getStudent(id);
-//     student.Dates.push(date);
-//     return await updateStudentHardDetails(id, student)
-// }
+
+const addPractice = async function (stu_id, practice_id) {
+    return new Promise((resolve, reject) => {
+        STUDENTS_MODEL.findByIdAndUpdate(stu_id, {
+            "$push": { "Practices": practice_id }
+        }, function (err) {
+            if (err) {
+                reject(false)
+            } else {
+                resolve(true)
+            }
+        })
+    })
+}
+
+const addPracticeToStudents = async function (pra_id, students) {
+    studentsArr = []
+    students.forEach(stu => {
+        studentsArr.push(addPractice(stu._id, pra_id))
+    })
+    const allPromises = Promise.all(studentsArr);
+    const list = await allPromises;
+
+    if (list.includes(undefined || false)) {
+        return false;
+    } else {
+        return true;
+    }
+}
 
 
 
-module.exports = {changeStudentsTeam, deleteFewStudents, getStudentsByTeamId, addNewStudent, deleteStudentById, getAllStudentsByUserID, updateStudentTeamID, updateStudentSoftDetails, getStudent }
+module.exports = { addPractice, addPracticeToStudents, changeStudentsTeam, deleteFewStudents, getStudentsByTeamId, addNewStudent, deleteStudentById, getAllStudentsByUserID, updateStudentTeamID, updateStudentSoftDetails, getStudent }

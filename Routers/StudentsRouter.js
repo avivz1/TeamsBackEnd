@@ -37,11 +37,8 @@ router.post('/deletefewstudents',async function(req, res, next) {
 router.post('/changestudentsteams',async function(req, res, next) {
     let response = await StudentsBL.changeStudentsTeam(req.body.teamId,req.body.students);
     if(response==true){
-        console.log('3')
         return res.json(true);
     }else{
-        console.log('4')
-
         return res.json(false);
     }
     
