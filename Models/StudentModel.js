@@ -4,11 +4,10 @@ let StudentSchema = new mongoose.Schema({
     User_ID:mongoose.ObjectId,
     Team_ID:mongoose.ObjectId,
     Name : String,
-    CreatedDate:Date,
+    CreatedDate:String,
     Belt:String,
     Age:Number,
     City:String,
-    Dates:[String],
     Practices:[]
 });
 

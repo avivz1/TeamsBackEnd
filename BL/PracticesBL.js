@@ -1,12 +1,12 @@
 const PRACTICES_MODEL = require('../Models/PracticeModel')
-
+const date = new Date()
 
 const getPractice = function (id) {
-    return new Promise ((resolve,reject)=>{
-        PRACTICES_MODEL.findById(id,function (err,prac){
-            if(err){
+    return new Promise((resolve, reject) => {
+        PRACTICES_MODEL.findById(id, function (err, prac) {
+            if (err) {
                 reject(false)
-            }else{
+            } else {
                 resolve(prac)
             }
         })
@@ -26,47 +26,67 @@ const getAllPractice = function (userid) {
     })
 }
 
-const addPractice = function (practice) {
-    return new Promise((resolve,reject)=>{
-        const p = new PRACTICES_MODEL({
-            User_ID: practice.userid,
-            Team_ID: practice.teamID,
-            Name: practice.name,
-            PreviousTeam: '',
-            PracticeHour: practice.hour,
-            PracticeDate: practice.date,
-            // new Date().getDate()+'/'+(new Date().getMonth()+1+'/'+new Date().getFullYear())
+const addPractice = function (practice, students) {
+    return new Promise((resolve, reject) => {
+        let stus = students.map(s => {
+            let obj = {
+                Name: null,
+                Id: s._id
+            }
+            return obj;
         })
 
-        p.save(function(err,pra){
-            if(err){
+        const p = new PRACTICES_MODEL({
+            User_ID: practice.userid,
+            Date: practice.date,
+            Name: practice.name,
+            Students: stus,
+            Team: { Team_ID: practice.teamID, Name: null },
+            PracticeHour: date.getHours() + ':' + date.getMinutes(),
+
+        })
+
+        p.save(function (err, pra) {
+            if (err) {
                 reject(false)
-            }else{
+            } else {
                 resolve(pra._id)
             }
         })
     })
 }
 
-const deletePractice = function (id){
-    return new Promise((resolve,reject)=>{
-        PRACTICES_MODEL.findByIdAndDelete(id,function(err){
-            if(err){
+const deletePractice = function (id) {
+    return new Promise((resolve, reject) => {
+        PRACTICES_MODEL.findByIdAndDelete(id, function (err) {
+            if (err) {
                 reject(false)
-            }else{
+            } else {
                 resolve(true)
             }
         })
     })
 }
 
-const updatePractice = function(p_id){
-    return new Promise((resolve,reject)=>{
-
+const updatePractice = function (practice, students) {
+    return new Promise((resolve, reject) => {
+        PRACTICES_MODEL.findByIdAndUpdate(practice._id,
+            {
+                Name: practice.name,
+                Date: practice.date,
+                Students: students,
+            }
+            , function (err) {
+                if (err) {
+                    reject(false)
+                } else {
+                    resolve(true)
+                }
+            })
     })
 }
 
 
 
 
-module.exports = {updatePractice,deletePractice,getPractice,getAllPractice,addPractice}
+module.exports = { updatePractice, deletePractice, getPractice, getAllPractice, addPractice }
