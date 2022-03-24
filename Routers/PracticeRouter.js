@@ -5,9 +5,9 @@ var StudentsBL = require('../BL/StudentsBL');
 
 
 router.post('/addpractice', async function (req, res, next) {
-    let practiceID = await PracticeBL.addPractice(p1);
+    let practiceID = await PracticeBL.addPractice(req.body.practice);
     if (practiceID != false) {
-        let res2 = await StudentsBL.addPracticeToStudents(practiceID, students)
+        let res2 = await StudentsBL.addPracticeToStudents(practiceID, req.body.students)
         if (res2 != false) {
             return res.json(true)
         } else {
@@ -20,7 +20,7 @@ router.post('/addpractice', async function (req, res, next) {
 });
 
 router.post('/getallpractices', async function (req, res, next) {
-    let resp = await PracticeBL.getAllPractice('6218c96b8cb6b14d697738f0');
+    let resp = await PracticeBL.getAllPractice(req.body.userID);
     if(resp!=false){
         return res.json(resp)
     }else{
@@ -30,7 +30,7 @@ router.post('/getallpractices', async function (req, res, next) {
 });
 
 router.post('/getpractice', async function (req, res, next) {
-    let resp = await PracticeBL.getPractice('62375052389309d96a87f46c');
+    let resp = await PracticeBL.getPractice(req.body.p_id);
     if(resp!=false){
         return res.json(resp)
     }else{

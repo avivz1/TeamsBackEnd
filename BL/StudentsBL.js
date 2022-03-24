@@ -7,7 +7,8 @@ const addNewStudent = function (student) {
             User_ID: student.userid,
             Team_ID: student.teamID,
             Name: student.name,
-            CreatedDate: new Date().getFullYear() + '-' + (new Date().getMonth() + 1) + '-' + new Date().getDate(),
+            CreatedDate: new Date().getDate()+'/'+(new Date().getMonth()+1+'/'+new Date().getFullYear()) ,
+            // CreatedDate: new Date().getFullYear() + '-' + (new Date().getMonth() + 1) + '-' + new Date().getDate(),
             Belt: student.belt,
             City: student.city,
             Age: student.age,
@@ -28,7 +29,6 @@ const deleteStudentById = function (id) {
             if (err) {
                 reject(false);
             } else {
-                console.log('stu deleted')
                 resolve(true);
             }
         })
@@ -135,7 +135,7 @@ const changeStudentsTeam = async function (teamId, stuArr) {
     }
 }
 
-const addPractice = async function (stu_id, practice_id) {
+const addPracticeToSingleStudent = async function (stu_id, practice_id) {
     return new Promise((resolve, reject) => {
         STUDENTS_MODEL.findByIdAndUpdate(stu_id, {
             "$push": { "Practices": practice_id }
@@ -152,7 +152,7 @@ const addPractice = async function (stu_id, practice_id) {
 const addPracticeToStudents = async function (pra_id, students) {
     studentsArr = []
     students.forEach(stu => {
-        studentsArr.push(addPractice(stu._id, pra_id))
+        studentsArr.push(addPracticeToSingleStudent(stu._id, pra_id))
     })
     const allPromises = Promise.all(studentsArr);
     const list = await allPromises;
@@ -166,4 +166,4 @@ const addPracticeToStudents = async function (pra_id, students) {
 
 
 
-module.exports = { addPractice, addPracticeToStudents, changeStudentsTeam, deleteFewStudents, getStudentsByTeamId, addNewStudent, deleteStudentById, getAllStudentsByUserID, updateStudentTeamID, updateStudentSoftDetails, getStudent }
+module.exports = { addPracticeToSingleStudent, addPracticeToStudents, changeStudentsTeam, deleteFewStudents, getStudentsByTeamId, addNewStudent, deleteStudentById, getAllStudentsByUserID, updateStudentTeamID, updateStudentSoftDetails, getStudent }

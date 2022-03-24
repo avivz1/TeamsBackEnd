@@ -32,9 +32,10 @@ const addPractice = function (practice) {
             User_ID: practice.userid,
             Team_ID: practice.teamID,
             Name: practice.name,
-            CreatedDate: new Date().getFullYear() + '-' + (new Date().getMonth() + 1) + '-' + new Date().getDate(),
             PreviousTeam: '',
-            PracticeDate: practice.PracticeDate,
+            PracticeHour: practice.hour,
+            PracticeDate: practice.date,
+            // new Date().getDate()+'/'+(new Date().getMonth()+1+'/'+new Date().getFullYear())
         })
 
         p.save(function(err,pra){
@@ -59,7 +60,13 @@ const deletePractice = function (id){
     })
 }
 
+const updatePractice = function(p_id){
+    return new Promise((resolve,reject)=>{
+
+    })
+}
 
 
 
-module.exports = {deletePractice,getPractice,getAllPractice,addPractice}
+
+module.exports = {updatePractice,deletePractice,getPractice,getAllPractice,addPractice}

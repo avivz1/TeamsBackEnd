@@ -5,9 +5,9 @@ let PracticesSchema = new mongoose.Schema({
     User_ID: mongoose.ObjectId,
     Team_ID: mongoose.ObjectId,
     Name: String,
-    CreatedDate: Date,
     PreviousTeam: String,
-    PracticeDate: String,
+    PracticeHour: Date,
+    PracticeDate: Date,
 });
 
 module.exports = mongoose.model('practices', PracticesSchema);
