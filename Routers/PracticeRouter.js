@@ -4,10 +4,27 @@ var PracticeBL = require('../BL/PracticesBL');
 var StudentsBL = require('../BL/StudentsBL');
 
 
+router.post('/deletepractice', async function (req, res, next) {
+    //delete the practice
+    let respo = await PracticeBL.deletePractice(req.body.practice._id)
+    if (respo == true) {
+        //delete the practice id within the students
+        let res1 = await StudentsBL.deletePracticeFromStudents(req.body.practice._id, req.body.practice.Students)
+        if (res1 == true) {
+            return res.json(true)
+        } else {
+            return res.json(false)
+        }
+    } else {
+        return res.json(false)
+    }
+
+});
+
 router.post('/addpractice', async function (req, res, next) {
-    let practiceID = await PracticeBL.addPractice(req.body.practice, req.body.students);
+    let practiceID = await PracticeBL.addPractice(req.body.practice, req.body.allStudents);
     if (practiceID != false) {
-        let res2 = await StudentsBL.addPracticeToStudents(practiceID, req.body.students)
+        let res2 = await StudentsBL.addPracticeToStudents(practiceID, req.body.chosenStudents)
         if (res2 != false) {
             return res.json(true)
         } else {

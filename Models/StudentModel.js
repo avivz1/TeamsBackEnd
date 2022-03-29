@@ -8,7 +8,7 @@ let StudentSchema = new mongoose.Schema({
     Belt:String,
     Age:Number,
     City:String,
-    Practices:[]
+    Practices:[mongoose.ObjectId]
 });
 
 module.exports  = mongoose.model('students',StudentSchema);

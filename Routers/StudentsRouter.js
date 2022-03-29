@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var StudentsBL = require('../BL/StudentsBL');
+var PracticeBL = require('../BL/PracticesBL');
 
 
 router.post('/addstudent',async function(req, res, next) {
@@ -14,6 +15,9 @@ router.post('/addstudent',async function(req, res, next) {
 });
 
 router.delete('/deletestudent/:id',async function(req, res, next) {
+    let student = await StudentsBL.getStudent(req.params.id);
+    console.log(student)
+    let re = await PracticeBL.deleteStudentFromPractice(student.Practices,student.Name,req.params.id);
     let response = await StudentsBL.deleteStudentById(req.params.id);
     if(response==true){
         return res.json(true);
@@ -25,7 +29,6 @@ router.delete('/deletestudent/:id',async function(req, res, next) {
 
 router.post('/deletefewstudents',async function(req, res, next) {
     let response = await StudentsBL.deleteFewStudents(req.body.students);
-    console.log('RouterRes || ' +JSON.stringify(response))
     if(response==true){
         return res.json(true);
     }else{
