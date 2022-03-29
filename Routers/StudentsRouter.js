@@ -14,11 +14,10 @@ router.post('/addstudent',async function(req, res, next) {
     
 });
 
-router.delete('/deletestudent/:id',async function(req, res, next) {
-    let student = await StudentsBL.getStudent(req.params.id);
-    console.log(student)
-    let re = await PracticeBL.deleteStudentFromPractice(student.Practices,student.Name,req.params.id);
-    let response = await StudentsBL.deleteStudentById(req.params.id);
+router.post('/deletestudent',async function(req, res, next) {
+    let student = await StudentsBL.getStudent(req.body.stuId);
+    let re = await PracticeBL.deleteStudentFromPractice(student.Name,req.body.stuId,req.body.userId);
+    let response = await StudentsBL.deleteStudentById(req.body.stuId);
     if(response==true){
         return res.json(true);
     }else{
@@ -26,6 +25,9 @@ router.delete('/deletestudent/:id',async function(req, res, next) {
     }
     
 });
+//need to add to same logic of this line below to the 'deletefewstudents' routh function()
+//call a func to run on foreach on this little function below
+//    let re = await PracticeBL.deleteStudentFromPractice(student.Name,req.body.stuId,req.body.userId);
 
 router.post('/deletefewstudents',async function(req, res, next) {
     let response = await StudentsBL.deleteFewStudents(req.body.students);

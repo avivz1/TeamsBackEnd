@@ -184,12 +184,13 @@ const addPracticeToStudents = async function (pra_id, students) {
 const deletePracticeFromStudents = async function (p_id, p_students) {
     studentArr = []
     p_students.forEach(stu =>{
+        console.log(stu)
         studentArr.push(deletePracticeId(stu.Student_ID,p_id))
     })
-
+    
     const allPromises = Promise.all(studentArr);
     const list = await allPromises;
-
+    
     if (list.includes(undefined || false)) {
         return false;
     } else {
@@ -200,6 +201,7 @@ const deletePracticeFromStudents = async function (p_id, p_students) {
 
 const deletePracticeId = async function (stu_id, p_id) {
     let stu = await getStudent(stu_id);
+    console.log(stu)
     let studentsPractices = stu.Practices.filter(s=>s._id!=p_id)
     let res = updateStudentPractice(studentsPractices,stu_id)
     if(res!=false){
