@@ -102,8 +102,8 @@ const updatePracticeStudents = function (p_id, students) {
     })
 }
 
-const getPracticeAndDeleteStudent = async function (praid, stuId, stu_name) {
-    let practice = await getPractice(praid);
+const getPracticeAndDeleteStudent = async function (practice, stuId, stu_name) {
+    // let practice = await getPractice(praid);
     practice.Students.forEach(st => {
         if (stuId == st.Student_ID) {
             st.Name = stu_name
@@ -115,7 +115,6 @@ const getPracticeAndDeleteStudent = async function (praid, stuId, stu_name) {
 
 const updatePracticeTeam = function (p_id, team) {
     return new Promise((resolve, reject) => {
-        console.log(team.Name)
         PRACTICES_MODEL.findByIdAndUpdate(p_id,
             {
                 Team: team,
@@ -130,17 +129,14 @@ const updatePracticeTeam = function (p_id, team) {
     })
 }
 
-const deleteTeamFromPractice = async function (team,userid) {
-    console.log(team)
+const deleteTeamFromPractice = async function (team, userid) {
     let practicesPromises = [];
     let obj = {
         Team_ID: team._id,
         Name: team.Name
     }
     let allPractices = await getAllPractices(userid);
-    console.log('allpractices |||| '+JSON.stringify(allPractices))
     let matchingPractices = allPractices.filter(p => p.Team.Team_ID.toString() == team._id);
-    console.log(matchingPractices.length)
 
     matchingPractices.forEach(p => {
         practicesPromises.push(updatePracticeTeam(p._id, obj))
@@ -159,14 +155,11 @@ const deleteTeamFromPractice = async function (team,userid) {
 
 }
 
-const deleteStudentFromPractice = async function (stu_name, stuId,userid) {
-    console.log(stu_name)
-    console.log(stuId)
+const deleteStudentFromPractice = async function (stu_name, stuId, userid) {
     let practices = []
     let practicesFromDB = await getAllPractices(userid);
-    console.log(practicesFromDB)
     practicesFromDB.forEach(pra => {
-        practices.push(getPracticeAndDeleteStudent(pra._id, stuId, stu_name))
+        practices.push(getPracticeAndDeleteStudent(pra, stuId, stu_name))
     })
 
     const allPromises = Promise.all(practices);
@@ -180,7 +173,23 @@ const deleteStudentFromPractice = async function (stu_name, stuId,userid) {
 
 }
 
+const deleteFewStudentsFromPractices = async function (students, userId) {
+    let deletePractices = []
+    students.forEach(stu => {
+        deletePractices.push(deleteStudentFromPractice(stu.Name, stu._id, userId))
+    })
+    const allPromises = Promise.all(deletePractices);
+    const list = await allPromises;
+
+    if (list.includes(undefined || false)) {
+        return false;
+    } else {
+        return true;
+    }
+
+}
 
 
 
-module.exports = { updatePracticeTeam, deleteTeamFromPractice, updatePracticeStudents, deleteStudentFromPractice, updatePractice, deletePractice, getPractice, getAllPractices, addPractice }
+
+module.exports = { deleteFewStudentsFromPractices, updatePracticeTeam, deleteTeamFromPractice, updatePracticeStudents, deleteStudentFromPractice, updatePractice, deletePractice, getPractice, getAllPractices, addPractice }

@@ -168,23 +168,24 @@ const addPracticeToSingleStudent = async function (stu_id, practice_id) {
 
 const addPracticeToStudents = async function (pra_id, students) {
     studentsArr = []
-    students.forEach(stu_id => {
-        studentsArr.push(addPracticeToSingleStudent(stu_id, pra_id))
-    })
-    const allPromises = Promise.all(studentsArr);
-    const list = await allPromises;
-
-    if (list.includes(undefined || false)) {
-        return false;
-    } else {
-        return true;
+    if(students.length>0){
+        students.forEach(stu_id => {
+            studentsArr.push(addPracticeToSingleStudent(stu_id, pra_id))
+        })
+        const allPromises = Promise.all(studentsArr);
+        const list = await allPromises;
+        
+        if (list.includes(undefined || false)) {
+            return false;
+        } else {
+            return true;
+        }
     }
 }
 
 const deletePracticeFromStudents = async function (p_id, p_students) {
     studentArr = []
     p_students.forEach(stu =>{
-        console.log(stu)
         studentArr.push(deletePracticeId(stu.Student_ID,p_id))
     })
     
@@ -201,13 +202,15 @@ const deletePracticeFromStudents = async function (p_id, p_students) {
 
 const deletePracticeId = async function (stu_id, p_id) {
     let stu = await getStudent(stu_id);
-    console.log(stu)
-    let studentsPractices = stu.Practices.filter(s=>s._id!=p_id)
-    let res = updateStudentPractice(studentsPractices,stu_id)
-    if(res!=false){
-        return true;
-    }else{
-        return false;
+    if(stu){
+
+        let studentsPractices = stu.Practices.filter(s=>s._id!=p_id)
+        let res = updateStudentPractice(studentsPractices,stu_id)
+        if(res!=false){
+            return true;
+        }else{
+            return false;
+        }
     }
 }
 
