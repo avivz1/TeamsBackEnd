@@ -1,5 +1,6 @@
 const PRACTICES_MODEL = require('../Models/PracticeModel')
 const date = new Date()
+var StudentsBL = require('../BL/StudentsBL');
 
 const getPractice = function (id) {
     return new Promise((resolve, reject) => {
@@ -68,15 +69,14 @@ const deletePractice = function (id) {
     })
 }
 
-const updatePractice = function (practice, students) {
+const updatePractice = function (practice) {
     return new Promise((resolve, reject) => {
         PRACTICES_MODEL.findByIdAndUpdate(practice._id,
             {
                 Name: practice.name,
                 Date: practice.date,
-                Students: students,
             }
-            , function (err) {
+            , function (err,id) {
                 if (err) {
                     reject(false)
                 } else {
@@ -103,7 +103,6 @@ const updatePracticeStudents = function (p_id, students) {
 }
 
 const getPracticeAndDeleteStudent = async function (practice, stuId, stu_name) {
-    // let practice = await getPractice(praid);
     practice.Students.forEach(st => {
         if (stuId == st.Student_ID) {
             st.Name = stu_name
@@ -188,8 +187,65 @@ const deleteFewStudentsFromPractices = async function (students, userId) {
     }
 
 }
+const isStudentWasInPractice = (arr, stuId, practiceId) => {
+    let student = arr.filter(stu=>stu._id==stuId && stu.Practices.includes(practiceId))
+    if(typeof student[0]=='object'){
+        return true;
+    }else{
+        return false;
+    }
+
+    // arr.forEach(stud => {
+    //     if (stud._id == stuId && stud.Practices.includes(practiceId)) {
+    //         return true;
+    //     } else {
+    //         return false;
+    //     }
+    // })
+}
+
+const getStudentsList = async function (practiceId, students, userId) {
+    let arr = await StudentsBL.getAllStudentsByUserID(userId);
+
+    if (students.length <= 0) {
+        return false;
+    }
+
+    let list = students.map((s) => {
+
+        let obj = { isChecked: false, isDeleted: false, Name: '', _id: '' }
+
+        if (s.Name == null) {
+            let stud = arr.filter(st => st._id == s.Student_ID);
+            obj.isChecked = isStudentWasInPractice(arr, s.Student_ID, practiceId)
+            obj.isDeleted = false;
+            obj.Name = stud[0].Name;
+            obj._id = s.Student_ID;
+            return obj;
+        } else {
+            obj.isChecked = isStudentWasInPractice(arr, s.Student_ID, practiceId)
+            obj.isDeleted = true
+            obj.Name = s.Name
+            obj._id = s._id
+            return obj
+        }
+
+    });
+
+    if (list.length <= 0) {
+        return false;
+    }
+    return list;
+}
+
+const addOrRemovePracticeFromStudent = async function (chosenStudents,allStudents,practiceId){
+    //Resume from here - need to understand how to remove or add the student by the update process
+    console.log('chosenStudents || ' +JSON.stringify(chosenStudents))
+    console.log('allStudents || ' +JSON.stringify(allStudents))
+    console.log('practiceId || ' +JSON.stringify(practiceId))
+    return true;
+}
 
 
 
-
-module.exports = { deleteFewStudentsFromPractices, updatePracticeTeam, deleteTeamFromPractice, updatePracticeStudents, deleteStudentFromPractice, updatePractice, deletePractice, getPractice, getAllPractices, addPractice }
+module.exports = {addOrRemovePracticeFromStudent, isStudentWasInPractice, getStudentsList, deleteFewStudentsFromPractices, updatePracticeTeam, deleteTeamFromPractice, updatePracticeStudents, deleteStudentFromPractice, updatePractice, deletePractice, getPractice, getAllPractices, addPractice }

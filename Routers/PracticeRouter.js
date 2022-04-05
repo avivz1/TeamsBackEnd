@@ -61,10 +61,19 @@ router.post('/getpractice', async function (req, res, next) {
 });
 
 router.post('/updatepractice', async function (req, res, next) {
-    let resp = await PracticeBL.updatePractice(req.body.practice, req.body.students);
-
+    let resp = await PracticeBL.updatePractice(req.body.practice);
+    let response = await PracticeBL.addOrRemovePracticeFromStudent(req.body.chosenStudents,req.body.allStudents,req.body.practice._id);
     if (resp != false) {
         return res.json(true)
+    } else {
+        return res.json(false)
+    }
+});
+
+router.post('/getstudentlistforpratice', async function (req, res, next) {
+    let resp = await PracticeBL.getStudentsList(req.body.practiceId,req.body.students,req.body.userId);
+    if (resp != false) {
+        return res.json(resp)
     } else {
         return res.json(false)
     }
