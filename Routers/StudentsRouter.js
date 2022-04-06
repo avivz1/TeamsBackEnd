@@ -25,9 +25,6 @@ router.post('/deletestudent', async function (req, res, next) {
     }
 
 });
-//need to add to same logic of this line below to the 'deletefewstudents' routh function()
-//call a func to run on foreach on this little function below
-//    let re = await PracticeBL.deleteStudentFromPractice(student.Name,req.body.stuId,req.body.userId);
 
 router.post('/deletefewstudents', async function (req, res, next) {
     let re = await PracticeBL.deleteFewStudentsFromPractices(req.body.students, req.body.userId);

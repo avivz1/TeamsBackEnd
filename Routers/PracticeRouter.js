@@ -62,7 +62,7 @@ router.post('/getpractice', async function (req, res, next) {
 
 router.post('/updatepractice', async function (req, res, next) {
     let resp = await PracticeBL.updatePractice(req.body.practice);
-    let response = await PracticeBL.addOrRemovePracticeFromStudent(req.body.chosenStudents,req.body.allStudents,req.body.practice._id);
+    let response = await PracticeBL.addOrRemovePracticeFromStudent(req.body.chosenStudents,req.body.allStudents,req.body.practice);
     if (resp != false) {
         return res.json(true)
     } else {

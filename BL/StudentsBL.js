@@ -203,9 +203,12 @@ const deletePracticeFromStudents = async function (p_id, p_students) {
 const deletePracticeId = async function (stu_id, p_id) {
     let stu = await getStudent(stu_id);
     if(stu){
-
-        let studentsPractices = stu.Practices.filter(s=>s._id!=p_id)
+        console.log('Student || '+JSON.stringify(stu))
+        console.log('p_id || '+JSON.stringify(p_id))
+        console.log('studentsPractices || '+JSON.stringify(stu.Practices))
+        let studentsPractices = stu.Practices.filter(s=>s!=p_id)
         let res = updateStudentPractice(studentsPractices,stu_id)
+        console.log(res)
         if(res!=false){
             return true;
         }else{

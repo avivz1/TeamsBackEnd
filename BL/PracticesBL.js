@@ -76,7 +76,7 @@ const updatePractice = function (practice) {
                 Name: practice.name,
                 Date: practice.date,
             }
-            , function (err,id) {
+            , function (err, id) {
                 if (err) {
                     reject(false)
                 } else {
@@ -187,11 +187,12 @@ const deleteFewStudentsFromPractices = async function (students, userId) {
     }
 
 }
+
 const isStudentWasInPractice = (arr, stuId, practiceId) => {
-    let student = arr.filter(stu=>stu._id==stuId && stu.Practices.includes(practiceId))
-    if(typeof student[0]=='object'){
+    let student = arr.filter(stu => stu._id == stuId && stu.Practices.includes(practiceId))
+    if (typeof student[0] == 'object') {
         return true;
-    }else{
+    } else {
         return false;
     }
 
@@ -238,14 +239,29 @@ const getStudentsList = async function (practiceId, students, userId) {
     return list;
 }
 
-const addOrRemovePracticeFromStudent = async function (chosenStudents,allStudents,practiceId){
-    //Resume from here - need to understand how to remove or add the student by the update process
-    console.log('chosenStudents || ' +JSON.stringify(chosenStudents))
-    console.log('allStudents || ' +JSON.stringify(allStudents))
-    console.log('practiceId || ' +JSON.stringify(practiceId))
-    return true;
+const addOrRemovePracticeFromStudent = async function (chosenStudents, allStudents, practice) {
+    let promises = []
+    allStudents.forEach(stu => {
+        if (stu.isDeleted == false) {
+            if (stu.isChecked == false && chosenStudents.includes(stu._id)) {
+                promises.push(StudentsBL.addPracticeToSingleStudent(stu._id, practice._id))
+            } else if (stu.isChecked == true && !chosenStudents.includes(stu._id)) {
+                promises.push(StudentsBL.deletePracticeId(stu._id, practice._id))
+            }
+        }
+    });
+
+    const allPromises = Promise.all(promises);
+    const list = await allPromises;
+
+    if (list.includes(undefined || false)) {
+        return false;
+    } else {
+        return true;
+    }
+
 }
 
 
 
-module.exports = {addOrRemovePracticeFromStudent, isStudentWasInPractice, getStudentsList, deleteFewStudentsFromPractices, updatePracticeTeam, deleteTeamFromPractice, updatePracticeStudents, deleteStudentFromPractice, updatePractice, deletePractice, getPractice, getAllPractices, addPractice }
+module.exports = { addOrRemovePracticeFromStudent, isStudentWasInPractice, getStudentsList, deleteFewStudentsFromPractices, updatePracticeTeam, deleteTeamFromPractice, updatePracticeStudents, deleteStudentFromPractice, updatePractice, deletePractice, getPractice, getAllPractices, addPractice }
