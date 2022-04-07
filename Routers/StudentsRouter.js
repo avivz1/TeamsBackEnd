@@ -14,6 +14,16 @@ router.post('/addstudent', async function (req, res, next) {
 
 });
 
+router.post('/getFewStudents', async function (req, res, next) {
+    let response = await StudentsBL.getFewStudentsByPractice(req.body.students);
+    if (response!=false) {
+        return res.json(response);
+    } else {
+        return res.json(false);
+    }
+
+});
+
 router.post('/deletestudent', async function (req, res, next) {
     let student = await StudentsBL.getStudent(req.body.stuId);
     let re = await PracticeBL.deleteStudentFromPractice(student.Name, req.body.stuId, req.body.userId);

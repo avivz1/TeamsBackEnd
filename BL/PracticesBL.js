@@ -2,7 +2,22 @@ const PRACTICES_MODEL = require('../Models/PracticeModel')
 const date = new Date()
 var StudentsBL = require('../BL/StudentsBL');
 
+const getFewPractices = async function (arr){
+    let promises = []
 
+    arr.forEach(praId => {
+        promises.push(getPractice(praId))
+    });
+
+    const allPromises = Promise.all(promises);
+    const list = await allPromises;
+
+    if (list.includes(undefined)) {
+        return false;
+    } else {
+        return list;
+    }
+}
 
 const getPractice = function (id) {
     return new Promise((resolve, reject) => {
@@ -217,10 +232,8 @@ const isStudentWasInPractice = (arr, stuId, practiceId) => {
 
     let student = arr.filter(stu => stu._id == stuId && stu.Practices.includes(practiceId))
     if (typeof student[0] == 'object') {
-        console.log('Is student was - true')
         return true;
     } else {
-        console.log('Is student was - false')
         return false;
     }
 
@@ -261,7 +274,6 @@ const getStudentsList = async function (practiceId, students, userId) {
 }
 
 const addOrRemovePracticeFromStudent = async function (chosenStudents, allStudents, practice) {
-    console.log(allStudents)
     let promises = []
     allStudents.forEach(stu => {
         if (stu.isDeleted == false) {
@@ -286,4 +298,4 @@ const addOrRemovePracticeFromStudent = async function (chosenStudents, allStuden
 
 
 
-module.exports = { practiceAttendancePrecent, addOrRemovePracticeFromStudent, isStudentWasInPractice, getStudentsList, deleteFewStudentsFromPractices, updatePracticeTeam, deleteTeamFromPractice, updatePracticeStudents, deleteStudentFromPractice, updatePractice, deletePractice, getPractice, getAllPractices, addPractice }
+module.exports = {getFewPractices, practiceAttendancePrecent, addOrRemovePracticeFromStudent, isStudentWasInPractice, getStudentsList, deleteFewStudentsFromPractices, updatePracticeTeam, deleteTeamFromPractice, updatePracticeStudents, deleteStudentFromPractice, updatePractice, deletePractice, getPractice, getAllPractices, addPractice }

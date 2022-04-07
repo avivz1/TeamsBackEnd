@@ -25,6 +25,16 @@ router.post('/deletepractice', async function (req, res, next) {
 
 });
 
+router.post('/getFewPractices', async function (req, res, next) {
+    let respo = await PracticeBL.getFewPractices(req.body.practices)
+    if (respo != false) {
+        return res.json(respo)
+    } else {
+        return res.json(false)
+    }
+
+});
+
 router.post('/addpractice', async function (req, res, next) {
     let practiceID = await PracticeBL.addPractice(req.body.practice, req.body.allStudents);
     if (practiceID != false) {

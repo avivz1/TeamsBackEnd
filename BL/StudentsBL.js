@@ -113,6 +113,23 @@ const getStudent = function (id) {
     })
 }
 
+const getFewStudentsByPractice = async function (arr){
+    let promises =[];
+
+    arr.forEach(stu => {
+        promises.push(getStudent(stu.Student_ID))
+    });
+
+    const allPromises = Promise.all(promises);
+    const list = await allPromises;
+
+    if (list.includes(undefined || false)) {
+        return false;
+    } else {
+        return list;
+    }
+}
+
 const getStudentsByTeamId = async function (teamId, userId) {
     let students = await getAllStudentsByUserID(userId);
     let studentsByTeamArr = students.filter(stu => stu.Team_ID == teamId)
@@ -215,4 +232,4 @@ const deletePracticeId = async function (stu_id, p_id) {
 
 
 
-module.exports = {updateStudentPractice, deletePracticeId, deletePracticeFromStudents, addPracticeToSingleStudent, addPracticeToStudents, changeStudentsTeam, deleteFewStudents, getStudentsByTeamId, addNewStudent, deleteStudentById, getAllStudentsByUserID, updateStudentTeamID, updateStudentSoftDetails, getStudent }
+module.exports = {getFewStudentsByPractice,updateStudentPractice, deletePracticeId, deletePracticeFromStudents, addPracticeToSingleStudent, addPracticeToStudents, changeStudentsTeam, deleteFewStudents, getStudentsByTeamId, addNewStudent, deleteStudentById, getAllStudentsByUserID, updateStudentTeamID, updateStudentSoftDetails, getStudent }
