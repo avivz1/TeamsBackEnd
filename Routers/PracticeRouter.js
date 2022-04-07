@@ -70,6 +70,16 @@ router.post('/updatepractice', async function (req, res, next) {
     }
 });
 
+router.post('/attendancepercentage', async function (req, res, next) {
+    let resp = await PracticeBL.practiceAttendancePrecent(req.body.practice,req.body.userId);
+
+    if (resp != false) {
+        return res.json(resp)
+    } else {
+        return res.json(false)
+    }
+});
+
 router.post('/getstudentlistforpratice', async function (req, res, next) {
     let resp = await PracticeBL.getStudentsList(req.body.practiceId,req.body.students,req.body.userId);
     if (resp != false) {

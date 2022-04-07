@@ -2,6 +2,8 @@ const PRACTICES_MODEL = require('../Models/PracticeModel')
 const date = new Date()
 var StudentsBL = require('../BL/StudentsBL');
 
+
+
 const getPractice = function (id) {
     return new Promise((resolve, reject) => {
         PRACTICES_MODEL.findById(id, function (err, prac) {
@@ -188,21 +190,41 @@ const deleteFewStudentsFromPractices = async function (students, userId) {
 
 }
 
+const practiceAttendancePrecent = async function (practice, userId) {
+    let arr = await StudentsBL.getAllStudentsByUserID(userId);
+
+    let promises = []
+    practice.Students.forEach(practiceStu => {
+        promises.push(isStudentWasInPractice(arr, practiceStu.Student_ID, practice._id))
+    });
+
+    const allPromises = Promise.all(promises);
+    const list = await allPromises;
+
+
+    if (list.includes(undefined)) {
+        return false;
+    } else {
+        let allTrue = list.filter(element => element == true)
+        let max = practice.Students.length
+
+        return (Math.abs(allTrue.length / max) * 100);
+    }
+
+}
+
 const isStudentWasInPractice = (arr, stuId, practiceId) => {
+
     let student = arr.filter(stu => stu._id == stuId && stu.Practices.includes(practiceId))
     if (typeof student[0] == 'object') {
+        console.log('Is student was - true')
         return true;
     } else {
+        console.log('Is student was - false')
         return false;
     }
 
-    // arr.forEach(stud => {
-    //     if (stud._id == stuId && stud.Practices.includes(practiceId)) {
-    //         return true;
-    //     } else {
-    //         return false;
-    //     }
-    // })
+
 }
 
 const getStudentsList = async function (practiceId, students, userId) {
@@ -215,7 +237,6 @@ const getStudentsList = async function (practiceId, students, userId) {
     let list = students.map((s) => {
 
         let obj = { isChecked: false, isDeleted: false, Name: '', _id: '' }
-
         if (s.Name == null) {
             let stud = arr.filter(st => st._id == s.Student_ID);
             obj.isChecked = isStudentWasInPractice(arr, s.Student_ID, practiceId)
@@ -240,6 +261,7 @@ const getStudentsList = async function (practiceId, students, userId) {
 }
 
 const addOrRemovePracticeFromStudent = async function (chosenStudents, allStudents, practice) {
+    console.log(allStudents)
     let promises = []
     allStudents.forEach(stu => {
         if (stu.isDeleted == false) {
@@ -264,4 +286,4 @@ const addOrRemovePracticeFromStudent = async function (chosenStudents, allStuden
 
 
 
-module.exports = { addOrRemovePracticeFromStudent, isStudentWasInPractice, getStudentsList, deleteFewStudentsFromPractices, updatePracticeTeam, deleteTeamFromPractice, updatePracticeStudents, deleteStudentFromPractice, updatePractice, deletePractice, getPractice, getAllPractices, addPractice }
+module.exports = { practiceAttendancePrecent, addOrRemovePracticeFromStudent, isStudentWasInPractice, getStudentsList, deleteFewStudentsFromPractices, updatePracticeTeam, deleteTeamFromPractice, updatePracticeStudents, deleteStudentFromPractice, updatePractice, deletePractice, getPractice, getAllPractices, addPractice }
