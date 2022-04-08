@@ -2,21 +2,54 @@ const PRACTICES_MODEL = require('../Models/PracticeModel')
 const date = new Date()
 var StudentsBL = require('../BL/StudentsBL');
 
-const getFewPractices = async function (arr){
-    let promises = []
+const getStudentAttendants = async function (userId,stuId){
+    // let promises = []
+    let obj ={}
+    let stu = await StudentsBL.getStudent(stuId)
+    //full object
+    let allPractices = await getAllPractices(userId)
+    //id array
+    let stuPractices = stu.Practices;
+    //full object
+    let allPracticesByStudent = allPractices.filter(p=>{
+        p.Students.forEach(s => {
+            if(s.Student_ID==stuId){
+                obj = p;
+            }
+        });
+        return obj;
+    })
 
-    arr.forEach(praId => {
-        promises.push(getPractice(praId))
-    });
+    let was = allPracticesByStudent.filter(pra=>{
+        if(stuPractices.includes(pra._id)){
+            return pra;
+        }
+    })
 
-    const allPromises = Promise.all(promises);
-    const list = await allPromises;
+    let wasnt = allPractices.filter(pr=>{
+        if(!stuPractices.includes(pr._id)){
+            return pr;
+        }
+    })
 
-    if (list.includes(undefined)) {
-        return false;
-    } else {
-        return list;
+    let json = {
+        presentPractices: was,
+        notPresentPractices:wasnt
     }
+    return json;
+    
+    // arr.forEach(praId => {
+    //     promises.push(getPractice(praId))
+    // });
+
+    // const allPromises = Promise.all(promises);
+    // const list = await allPromises;
+
+    // if (list.includes(undefined)) {
+    //     return false;
+    // } else {
+    //     return list;
+    // }
 }
 
 const getPractice = function (id) {
@@ -298,4 +331,4 @@ const addOrRemovePracticeFromStudent = async function (chosenStudents, allStuden
 
 
 
-module.exports = {getFewPractices, practiceAttendancePrecent, addOrRemovePracticeFromStudent, isStudentWasInPractice, getStudentsList, deleteFewStudentsFromPractices, updatePracticeTeam, deleteTeamFromPractice, updatePracticeStudents, deleteStudentFromPractice, updatePractice, deletePractice, getPractice, getAllPractices, addPractice }
+module.exports = {getStudentAttendants, practiceAttendancePrecent, addOrRemovePracticeFromStudent, isStudentWasInPractice, getStudentsList, deleteFewStudentsFromPractices, updatePracticeTeam, deleteTeamFromPractice, updatePracticeStudents, deleteStudentFromPractice, updatePractice, deletePractice, getPractice, getAllPractices, addPractice }
