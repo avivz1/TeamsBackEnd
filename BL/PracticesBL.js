@@ -2,7 +2,7 @@ const PRACTICES_MODEL = require('../Models/PracticeModel')
 const date = new Date()
 var StudentsBL = require('../BL/StudentsBL');
 
-const getStudentAttendants = async function (userId,stuId){
+const getStudentAttendants = async function (userId, stuId) {
     // let promises = []
     let arr = [];
     let stu = await StudentsBL.getStudent(stuId)
@@ -13,12 +13,12 @@ const getStudentAttendants = async function (userId,stuId){
 
     let was = []
     let wasnt = []
-    allPractices.filter(p=>{
-        p.Students.forEach(stu=>{
-            if(stu.Student_ID==stuId){
-                if(stuPractices.includes(p._id)){
+    allPractices.filter(p => {
+        p.Students.forEach(stu => {
+            if (stu.Student_ID == stuId) {
+                if (stuPractices.includes(p._id)) {
                     was.push(p)
-                }else{
+                } else {
                     wasnt.push(p)
                 }
             }
@@ -27,71 +27,10 @@ const getStudentAttendants = async function (userId,stuId){
 
     let json = {
         presentPractices: was,
-        notPresentPractices:wasnt
+        notPresentPractices: wasnt
     }
     return json;
 
-    //full object
-    // let obj ={}
-    // let allPracticesByStudent = allPractices.map(p=>{
-    //     p.Students.forEach(s => {
-    //         if(s.Student_ID==stuId){
-    //             obj = p;
-    //             // arr.push(p)
-    //         }
-    //     });
-    //     return obj;
-    // })
-
-
-    // let was = allPracticesByStudent.filter(pra=>{
-    //     if(stuPractices.includes(pra._id)){
-    //         return pra;
-    //     }
-    // })
-
-    // let obj2={}
-    
-    // p.Students.forEach(student=>{
-        //     if(student.Student_ID==stuId){
-        //         obj2=p;
-        //         return obj2;
-        //         // return p;
-        //     }
-        // })
-
-    // let arr1=[]
-    // let wasnt = allPractices.filter(pr=>{
-    //     pr.Students.forEach(student => {
-    //         if(student.Student_ID==stuId){
-    //             if(!stuPractices.includes(pr._id)){
-    //                 let obj2= {}
-    //                 obj2 = pr;
-    //                 arr.push(obj)
-    //                 // obj1 = pr;
-    //             }
-    //         }
-    //     });
-    //     return arr;
-    //     // if(!stuPractices.includes(pr._id)){
-            
-    //     //     return pr;
-    //     // }
-    // })
-
-    
-    // arr.forEach(praId => {
-    //     promises.push(getPractice(praId))
-    // });
-
-    // const allPromises = Promise.all(promises);
-    // const list = await allPromises;
-
-    // if (list.includes(undefined)) {
-    //     return false;
-    // } else {
-    //     return list;
-    // }
 }
 
 const getPractice = function (id) {
@@ -297,7 +236,6 @@ const practiceAttendancePrecent = async function (practice, userId) {
     } else {
         let allTrue = list.filter(element => element == true)
         let max = practice.Students.length
-
         return (Math.abs(allTrue.length / max) * 100);
     }
 
@@ -371,6 +309,66 @@ const addOrRemovePracticeFromStudent = async function (chosenStudents, allStuden
 
 }
 
+const getTotalDivision = async function (userId) {
+    let _present = 0;
+    let _notPresent = 0;
+    let allStudents = await StudentsBL.getAllStudentsByUserID(userId);
+    let allPractices = await getAllPractices(userId);
+    let studentObject = '';
+
+    allPractices.forEach(p => {
+        p.Students.forEach(s => {
+            allStudents.forEach(studen => {
+                if (studen._id == s.Student_ID.toString()) {
+                    studentObject = studen;
+                }
+            })
+            if (studentObject) {
+                if (studentObject.Practices.includes(p._id)) {
+                    _present = _present + 1;
+                } else {
+                    _notPresent = _notPresent + 1;
+                }
+            }
+        })
+    })
+    let obj = {
+        present: _present,
+        notPresent: _notPresent,
+        total: _present + _notPresent
+    }
+    return obj;
+
+    // allPractices.forEach(p=>{
+    //    promises.push(practiceAttendancePrecent(p,userId));
+    // })
+
+    // const allPromises = Promise.all(promises);
+    // const list = await allPromises;
+
+    // if (list.includes(undefined || false)) {
+    //     return false;
+    // } else {
+    //     return list;
+    // }
+
+    // allPractices.forEach(p => {
+    //     p.Students.forEach(s=>{
+    //         if(s.Practices.includes(p._id)){
+    //             _present=_present+1;
+    //         }else{
+    // _notPresent=_notPresent+1;
+    //         }
+    //     })
+    // });
+    // let obj = {
+    //     present : _present,
+    //     notPresent: _notPresent,
+    //     total : _total
+    // }
+    // return obj;
+}
 
 
-module.exports = {getStudentAttendants, practiceAttendancePrecent, addOrRemovePracticeFromStudent, isStudentWasInPractice, getStudentsList, deleteFewStudentsFromPractices, updatePracticeTeam, deleteTeamFromPractice, updatePracticeStudents, deleteStudentFromPractice, updatePractice, deletePractice, getPractice, getAllPractices, addPractice }
+
+module.exports = { getTotalDivision, getStudentAttendants, practiceAttendancePrecent, addOrRemovePracticeFromStudent, isStudentWasInPractice, getStudentsList, deleteFewStudentsFromPractices, updatePracticeTeam, deleteTeamFromPractice, updatePracticeStudents, deleteStudentFromPractice, updatePractice, deletePractice, getPractice, getAllPractices, addPractice }

@@ -57,33 +57,15 @@ router.post('/deleteteam',async function(req, response, next) {
     }
 })
 
-router.get('/',async function(req, response, next) {
+router.post('/getdistributionbyTeam',async function(req,response,next){
+    let res = await TeamsBL.getStudentsDistributionByTeam(req.body.userId);
+    if(res!=false){
+        response.json(res);
+    }else{
+        response.json(false);
+    }
 
-    let res1 = await TeamsBL.addTeam({
-        name : "Judo Power",
-        type:"3",
-        city : "Kfar Saba",
-    })
-    let res2 = await TeamsBL.addTeam({
-        name : "Judo Sport",
-        type:"5",
-        city : "Herzeliya",
-    })
-
-    let res3 = await TeamsBL.getAllTeams();
-    
-    let res4 = await TeamsBL.deleteTeam(res1);
-    let res5 = await TeamsBL.getTeam(res2);
-
-    let res6 = await TeamsBL.updateTeam(res2,{
-        name : "Judo PowerSport",
-        type:"7",
-        city : "Los-Angeles",
-    });
-
-    return response.json("OK")
-
-    });
+})
 
     module.exports = router;
 

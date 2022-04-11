@@ -99,6 +99,16 @@ router.post('/getstudentlistforpratice', async function (req, res, next) {
     }
 });
 
+router.post('/getTotalDivision', async function (req, res, next) {
+    let resp = await PracticeBL.getTotalDivision(req.body.userId);
+    if (resp != undefined || resp!=null) {
+        return res.json(resp)
+    } else {
+        return res.json(false)
+    }
+});
+
+
 
 // let p1 = {
 //     userid: '6218c96b8cb6b14d697738f0',
