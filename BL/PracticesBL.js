@@ -4,32 +4,25 @@ var StudentsBL = require('../BL/StudentsBL');
 
 const getStudentAttendants = async function (userId,stuId){
     // let promises = []
-    let obj ={}
+    let arr = [];
     let stu = await StudentsBL.getStudent(stuId)
     //full object
     let allPractices = await getAllPractices(userId)
     //id array
     let stuPractices = stu.Practices;
-    //full object
-    let allPracticesByStudent = allPractices.filter(p=>{
-        p.Students.forEach(s => {
-            if(s.Student_ID==stuId){
-                obj = p;
+
+    let was = []
+    let wasnt = []
+    allPractices.filter(p=>{
+        p.Students.forEach(stu=>{
+            if(stu.Student_ID==stuId){
+                if(stuPractices.includes(p._id)){
+                    was.push(p)
+                }else{
+                    wasnt.push(p)
+                }
             }
-        });
-        return obj;
-    })
-
-    let was = allPracticesByStudent.filter(pra=>{
-        if(stuPractices.includes(pra._id)){
-            return pra;
-        }
-    })
-
-    let wasnt = allPractices.filter(pr=>{
-        if(!stuPractices.includes(pr._id)){
-            return pr;
-        }
+        })
     })
 
     let json = {
@@ -37,6 +30,55 @@ const getStudentAttendants = async function (userId,stuId){
         notPresentPractices:wasnt
     }
     return json;
+
+    //full object
+    // let obj ={}
+    // let allPracticesByStudent = allPractices.map(p=>{
+    //     p.Students.forEach(s => {
+    //         if(s.Student_ID==stuId){
+    //             obj = p;
+    //             // arr.push(p)
+    //         }
+    //     });
+    //     return obj;
+    // })
+
+
+    // let was = allPracticesByStudent.filter(pra=>{
+    //     if(stuPractices.includes(pra._id)){
+    //         return pra;
+    //     }
+    // })
+
+    // let obj2={}
+    
+    // p.Students.forEach(student=>{
+        //     if(student.Student_ID==stuId){
+        //         obj2=p;
+        //         return obj2;
+        //         // return p;
+        //     }
+        // })
+
+    // let arr1=[]
+    // let wasnt = allPractices.filter(pr=>{
+    //     pr.Students.forEach(student => {
+    //         if(student.Student_ID==stuId){
+    //             if(!stuPractices.includes(pr._id)){
+    //                 let obj2= {}
+    //                 obj2 = pr;
+    //                 arr.push(obj)
+    //                 // obj1 = pr;
+    //             }
+    //         }
+    //     });
+    //     return arr;
+    //     // if(!stuPractices.includes(pr._id)){
+            
+    //     //     return pr;
+    //     // }
+    // })
+
     
     // arr.forEach(praId => {
     //     promises.push(getPractice(praId))
