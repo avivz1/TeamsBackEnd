@@ -85,6 +85,17 @@ router.post('/getallstudentsbyuserid', async function (req, res, next) {
     }
 });
 
+router.post('/addorupdatestudentphoto', async function (req, res, next) {
+    console.log(req.body.photo)
+    let res1 = await StudentsBL.addOrUpdateStudentPhoto(req.body.photo,req.body.studentId);
+    if (!res1) {
+        return res.json(false)
+    } else {
+        return res.json(res1)
+    }
+});
+
+
 
 
 

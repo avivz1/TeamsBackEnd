@@ -109,22 +109,4 @@ router.post('/getTotalDivision', async function (req, res, next) {
 });
 
 
-
-// let p1 = {
-//     userid: '6218c96b8cb6b14d697738f0',
-//     teamID: '623747b97b47d0b00fb76ce8',
-//     name: 'p1',
-//     PracticeDate: new Date().getFullYear() + '-' + (new Date().getMonth() + 1) + '-' + new Date().getDate(),
-// }
-// let students = [
-//     {
-//         _id: "623750d2e0bddae891dbad96",
-//     }
-// ]
-
-
-
-
-
-
 module.exports = router;

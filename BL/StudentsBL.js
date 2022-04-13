@@ -9,10 +9,10 @@ const addNewStudent = function (student) {
             Team_ID: student.teamID,
             Name: student.name,
             CreatedDate: new Date().getDate() + '/' + (new Date().getMonth() + 1 + '/' + new Date().getFullYear()),
-            // CreatedDate: new Date().getFullYear() + '-' + (new Date().getMonth() + 1) + '-' + new Date().getDate(),
             Belt: student.belt,
             City: student.city,
             Age: student.age,
+            Image:''
         });
         stu.save(function (err, newStudent) {
             if (err) {
@@ -230,6 +230,20 @@ const deletePracticeId = async function (stu_id, p_id) {
     }
 }
 
+const addOrUpdateStudentPhoto = async function (photo,stuId){
+    return new Promise ((resolve,reject)=>{
+        StudentModel.findByIdAndUpdate(stuId,{
+            Image:photo
+        },function(err){
+            if(err){
+                reject(false);
+            }else{
+                resolve(true)
+            }
+        })
+    })
+
+}
 
 
-module.exports = {getFewStudentsByPractice,updateStudentPractice, deletePracticeId, deletePracticeFromStudents, addPracticeToSingleStudent, addPracticeToStudents, changeStudentsTeam, deleteFewStudents, getStudentsByTeamId, addNewStudent, deleteStudentById, getAllStudentsByUserID, updateStudentTeamID, updateStudentSoftDetails, getStudent }
+module.exports = {addOrUpdateStudentPhoto,getFewStudentsByPractice,updateStudentPractice, deletePracticeId, deletePracticeFromStudents, addPracticeToSingleStudent, addPracticeToStudents, changeStudentsTeam, deleteFewStudents, getStudentsByTeamId, addNewStudent, deleteStudentById, getAllStudentsByUserID, updateStudentTeamID, updateStudentSoftDetails, getStudent }
