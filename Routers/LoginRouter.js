@@ -8,6 +8,8 @@ var TeamsBL = require('../BL/TeamsBL');
 
 
 
+
+
 router.post('/', async function (req, res, next) {
     let isExistsResponse = await usersBL.isUserExists(req.body.inputEmail, req.body.inputPassword);
     return res.json(isExistsResponse);
@@ -87,6 +89,16 @@ router.post('/signup', async function (req, res, next) {
             return res.json(false)
         }
     }
+
+});
+
+router.post('/backupdb', async function (req, res, next) {
+    let practices = await PracticeBL.getAllPractices(req.body.userId);
+    let teams = await TeamsBL.getAllTeamsByUserId(req.body.userId);
+    let students = await StudentsBL.getAllStudentsByUserID(req.body.userId);
+
+    return res.json([practices,teams,students]);
+
 
 });
 
