@@ -349,12 +349,13 @@ const getTotalDivision = async function (userId) {
 const getTotalDivisionByMonth = async function (userId) {
     // let userDay = userObj[0].CreatedDate.split('/')[0]
     // let userMonth = userObj[0].CreatedDate.split('/')[1]
+    // let allStudents = await StudentsBL.getAllStudentsByUserID(userId);
+    // let userObj = await UserBL.getUserById(userId);
+    // let userYear = userObj[0].CreatedDate.split('/')[2]
+    
     let arr=[0,0,0,0,0,0,0,0,0,0,0,0]
     let thisYear = new Date().getFullYear();
     let allPractices = await getAllPractices(userId);
-    let allStudents = await StudentsBL.getAllStudentsByUserID(userId);
-    let userObj = await UserBL.getUserById(userId);
-    let userYear = userObj[0].CreatedDate.split('/')[2]
     let promises = []
 
     allPractices.forEach(p => {
