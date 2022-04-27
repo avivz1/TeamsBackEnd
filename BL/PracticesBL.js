@@ -219,9 +219,8 @@ const deleteFewStudentsFromPractices = async function (students, userId) {
 
 }
 
-const practiceAttendancePrecent = async function (practice, userId) {
+const getPracticeAttendancePrecent = async function (practice, userId) {
     let arr = await StudentsBL.getAllStudentsByUserID(userId);
-
     let promises = []
     practice.Students.forEach(practiceStu => {
         promises.push(isStudentWasInPractice(arr, practiceStu.Student_ID, practice._id))
@@ -236,14 +235,19 @@ const practiceAttendancePrecent = async function (practice, userId) {
     } else {
         let allTrue = list.filter(element => element == true)
         let max = practice.Students.length
-        return (Math.abs(allTrue.length / max) * 100);
+        let obj = {
+            result : Math.abs(allTrue.length / max) * 100,
+            date : practice.Date
+        }
+        return obj; 
+        // return (Math.abs(allTrue.length / max) * 100);
     }
 
 }
 
 const isStudentWasInPractice = (arr, stuId, practiceId) => {
 
-    let student = arr.filter(stu => stu._id == stuId && stu.Practices.includes(practiceId))
+    let student = arr.filter(stu => stu._id == stuId.toString() && stu.Practices.includes(practiceId.toString()))
     if (typeof student[0] == 'object') {
         return true;
     } else {
@@ -339,36 +343,41 @@ const getTotalDivision = async function (userId) {
     }
     return obj;
 
-    // allPractices.forEach(p=>{
-    //    promises.push(practiceAttendancePrecent(p,userId));
-    // })
+}
 
-    // const allPromises = Promise.all(promises);
-    // const list = await allPromises;
+const getTotalDivisionByMonth = async function (userId) {
+    let thisMonth = new Date().getMonth() + 1;
+    let allPractices = await getAllPractices(userId);
+    let allStudents = await StudentsBL.getAllStudentsByUserID(userId);
+    let promises = []
 
-    // if (list.includes(undefined || false)) {
-    //     return false;
-    // } else {
-    //     return list;
-    // }
+    allPractices.forEach(p => {
+        promises.push(getPracticeAttendancePrecent(p, userId))
+    });
 
-    // allPractices.forEach(p => {
-    //     p.Students.forEach(s=>{
-    //         if(s.Practices.includes(p._id)){
-    //             _present=_present+1;
-    //         }else{
-    // _notPresent=_notPresent+1;
-    //         }
-    //     })
-    // });
-    // let obj = {
-    //     present : _present,
-    //     notPresent: _notPresent,
-    //     total : _total
-    // }
-    // return obj;
+    const allPromises = Promise.all(promises);
+    const list = await allPromises;
+
+    if (list.includes(undefined || false)) {
+        return false;
+    } else {
+        let newList = list.map(x=>{
+            let obj = {
+                result: x.result,
+                month:x.date.getMonth(),
+                year : x.date.getFullYear()
+            }
+            return obj
+        })
+
+
+
+        console.log(newList)
+        return newList;
+    }
+
+
 }
 
 
-
-module.exports = { getTotalDivision, getStudentAttendants, practiceAttendancePrecent, addOrRemovePracticeFromStudent, isStudentWasInPractice, getStudentsList, deleteFewStudentsFromPractices, updatePracticeTeam, deleteTeamFromPractice, updatePracticeStudents, deleteStudentFromPractice, updatePractice, deletePractice, getPractice, getAllPractices, addPractice }
+module.exports = { getTotalDivisionByMonth, getTotalDivision, getStudentAttendants, getPracticeAttendancePrecent, addOrRemovePracticeFromStudent, isStudentWasInPractice, getStudentsList, deleteFewStudentsFromPractices, updatePracticeTeam, deleteTeamFromPractice, updatePracticeStudents, deleteStudentFromPractice, updatePractice, deletePractice, getPractice, getAllPractices, addPractice }

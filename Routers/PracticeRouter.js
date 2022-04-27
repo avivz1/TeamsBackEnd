@@ -81,7 +81,7 @@ router.post('/updatepractice', async function (req, res, next) {
 });
 
 router.post('/attendancepercentage', async function (req, res, next) {
-    let resp = await PracticeBL.practiceAttendancePrecent(req.body.practice,req.body.userId);
+    let resp = await PracticeBL.getPracticeAttendancePrecent(req.body.practice,req.body.userId);
 
     if (resp != false) {
         return res.json(resp)
@@ -102,6 +102,15 @@ router.post('/getstudentlistforpratice', async function (req, res, next) {
 router.post('/getTotalDivision', async function (req, res, next) {
     let resp = await PracticeBL.getTotalDivision(req.body.userId);
     if (resp != undefined || resp!=null) {
+        return res.json(resp)
+    } else {
+        return res.json(false)
+    }
+});
+
+router.post('/getTotalDivisionByMonth', async function (req, res, next) {
+    let resp = await PracticeBL.getTotalDivisionByMonth(req.body.userId);
+    if (resp != false) {
         return res.json(resp)
     } else {
         return res.json(false)
