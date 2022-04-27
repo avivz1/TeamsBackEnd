@@ -1,6 +1,7 @@
 const PRACTICES_MODEL = require('../Models/PracticeModel')
 const date = new Date()
 var StudentsBL = require('../BL/StudentsBL');
+var UserBL = require('../BL/UsersBL');
 
 const getStudentAttendants = async function (userId, stuId) {
     // let promises = []
@@ -346,9 +347,14 @@ const getTotalDivision = async function (userId) {
 }
 
 const getTotalDivisionByMonth = async function (userId) {
-    let thisMonth = new Date().getMonth() + 1;
+    // let userDay = userObj[0].CreatedDate.split('/')[0]
+    // let userMonth = userObj[0].CreatedDate.split('/')[1]
+    let arr=[0,0,0,0,0,0,0,0,0,0,0,0]
+    let thisYear = new Date().getFullYear();
     let allPractices = await getAllPractices(userId);
     let allStudents = await StudentsBL.getAllStudentsByUserID(userId);
+    let userObj = await UserBL.getUserById(userId);
+    let userYear = userObj[0].CreatedDate.split('/')[2]
     let promises = []
 
     allPractices.forEach(p => {
@@ -364,16 +370,19 @@ const getTotalDivisionByMonth = async function (userId) {
         let newList = list.map(x=>{
             let obj = {
                 result: x.result,
-                month:x.date.getMonth(),
+                month:x.date.getMonth()+1,
                 year : x.date.getFullYear()
             }
             return obj
         })
 
+        newList.forEach(obj => {
+            if(obj.year==thisYear){
+                arr[obj.month-1] = (arr[obj.month-1]+obj.result)/2
+            }
+        });
 
-
-        console.log(newList)
-        return newList;
+        return arr;
     }
 
 

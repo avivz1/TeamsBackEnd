@@ -1,16 +1,16 @@
 const USERS_MODEL = require('../Models/UsersModel');
 
-const updateUser = async function(id,user){
-    return new Promise((resolve,reject)=>{
+const updateUser = async function (id, user) {
+    return new Promise((resolve, reject) => {
         USERS_MODEL.findOneAndUpdate(id, {
-             Email:user.email,
-             Password:user.password
+            Email: user.email,
+            Password: user.password
 
-            }, function(err){
+        }, function (err) {
 
-            if(err){
+            if (err) {
                 reject(err);
-            }else{
+            } else {
                 resolve(true)
             }
         })
@@ -19,79 +19,92 @@ const updateUser = async function(id,user){
 
 }
 
-const deleteUser = async function(id){
-    return new Promise((resolve,reject)=>{
-        USERS_MODEL.findByIdAndDelete(id, function(err){
-            if(err){
+const deleteUser = async function (id) {
+    return new Promise((resolve, reject) => {
+        USERS_MODEL.findByIdAndDelete(id, function (err) {
+            if (err) {
                 reject(err)
-            }else{
+            } else {
                 resolve(true)
             }
         }) // executes
 
-})
+    })
 }
 
-const getUserID = async function (email,password){
+const getUserID = async function (email, password) {
     let users = await getAllUsers();
-    let user = users.filter(x => x.Email==email && x.Password==password);
-    if(user.length>0){
+    let user = users.filter(x => x.Email == email && x.Password == password);
+    if (user.length > 0) {
         return user[0]._id;
-    }else{
+    } else {
         return "Error";
     }
 
 };
 
-const addNewUser = async function (email,password){
-    return new Promise((resolve,reject)=>{
+const addNewUser = async function (email, password) {
+    return new Promise((resolve, reject) => {
         const user = new USERS_MODEL({
-            Email:email,
-            Password:password
+            Email: email,
+            Password: password,
+            CreatedDate: new Date().getDate() + '/' + (new Date().getMonth() + 1 + '/' + new Date().getFullYear()),
         })
-        user.save(function(err,newUser){
-            if(err){
+        user.save(function (err, newUser) {
+            if (err) {
                 reject(false);
-            }else{
+            } else {
                 resolve(newUser._id);
             }
         })
     })
 };
 
-const getAllUsers =  function (){
-    return new Promise((resolve,reject)=>{
-        USERS_MODEL.find({},function(err,users){
-            if(err){
+const getAllUsers = function () {
+    return new Promise((resolve, reject) => {
+        USERS_MODEL.find({}, function (err, users) {
+            if (err) {
                 reject(err);
-            }else{
+            } else {
                 resolve(users);
             }
         })
     })
 };
 
-const isUserExists = async function (email,password){
+const isUserExists = async function (email, password) {
     let users = await getAllUsers();
-    let user = users.filter(x=>x.Password==password&&x.Email==email);
-    if(user.length>0){
+    let user = users.filter(x => x.Password == password && x.Email == email);
+    if (user.length > 0) {
         return user[0]._id;
-    }else{
+    } else {
         return false;
     }
 
 };
 
-const isUserNameAvailable=async function(email){
-    let users=await getAllUsers();
-    let flag=true;
+const isUserNameAvailable = async function (email) {
+    let users = await getAllUsers();
+    let flag = true;
 
-    users.forEach(user=>{
-        if(user.Email==email){
-            flag=false;
+    users.forEach(user => {
+        if (user.Email == email) {
+            flag = false;
         }
     })
     return flag;
-  };
+};
 
-module.exports = {isUserExists,getAllUsers,addNewUser,updateUser,deleteUser,getUserID,isUserNameAvailable}
+const getUserById = async function (userId){
+    return new Promise((resolve, reject) => {
+        USERS_MODEL.find({userId}, function (err, user) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(user);
+            }
+        })
+    })
+}
+
+module.exports = {getUserById, isUserExists, getAllUsers, addNewUser, updateUser, deleteUser, getUserID, isUserNameAvailable }

@@ -9,11 +9,11 @@ router.post('/deletepractice', async function (req, res, next) {
     let respo = await PracticeBL.deletePractice(req.body.practice._id)
     if (respo == true) {
 
-        if(req.body.practice.Students.length>0){
+        if (req.body.practice.Students.length > 0) {
             let res1 = await StudentsBL.deletePracticeFromStudents(req.body.practice._id, req.body.practice.Students);
-            if(res1==true){
+            if (res1 == true) {
                 return res.json(true);
-            }else{
+            } else {
                 return res.json(false);
             }
         }
@@ -26,7 +26,7 @@ router.post('/deletepractice', async function (req, res, next) {
 });
 
 router.post('/getstudentattendents', async function (req, res, next) {
-    let respo = await PracticeBL.getStudentAttendants(req.body.userId,req.body.stuId)
+    let respo = await PracticeBL.getStudentAttendants(req.body.userId, req.body.stuId)
     if (respo != false) {
         return res.json(respo)
     } else {
@@ -72,7 +72,7 @@ router.post('/getpractice', async function (req, res, next) {
 
 router.post('/updatepractice', async function (req, res, next) {
     let resp = await PracticeBL.updatePractice(req.body.practice);
-    let response = await PracticeBL.addOrRemovePracticeFromStudent(req.body.chosenStudents,req.body.allStudents,req.body.practice);
+    let response = await PracticeBL.addOrRemovePracticeFromStudent(req.body.chosenStudents, req.body.allStudents, req.body.practice);
     if (resp != false) {
         return res.json(true)
     } else {
@@ -81,7 +81,7 @@ router.post('/updatepractice', async function (req, res, next) {
 });
 
 router.post('/attendancepercentage', async function (req, res, next) {
-    let resp = await PracticeBL.getPracticeAttendancePrecent(req.body.practice,req.body.userId);
+    let resp = await PracticeBL.getPracticeAttendancePrecent(req.body.practice, req.body.userId);
 
     if (resp != false) {
         return res.json(resp)
@@ -91,7 +91,7 @@ router.post('/attendancepercentage', async function (req, res, next) {
 });
 
 router.post('/getstudentlistforpratice', async function (req, res, next) {
-    let resp = await PracticeBL.getStudentsList(req.body.practiceId,req.body.students,req.body.userId);
+    let resp = await PracticeBL.getStudentsList(req.body.practiceId, req.body.students, req.body.userId);
     if (resp != false) {
         return res.json(resp)
     } else {
@@ -101,7 +101,7 @@ router.post('/getstudentlistforpratice', async function (req, res, next) {
 
 router.post('/getTotalDivision', async function (req, res, next) {
     let resp = await PracticeBL.getTotalDivision(req.body.userId);
-    if (resp != undefined || resp!=null) {
+    if (resp != undefined || resp != null) {
         return res.json(resp)
     } else {
         return res.json(false)
