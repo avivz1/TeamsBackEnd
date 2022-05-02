@@ -74,6 +74,7 @@ router.post('/adddata', async function (req, res, next) {
     let stu3_id = await StudentsBL.addNewStudent(stu3_obj);
     let stu4_id = await StudentsBL.addNewStudent(stu4_obj);
 
+    return res.json('OK')
 
 });
 

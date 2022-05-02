@@ -52,6 +52,8 @@ router.post('/addpractice', async function (req, res, next) {
 
 router.post('/getallpractices', async function (req, res, next) {
     let resp = await PracticeBL.getAllPractices(req.body.userID);
+    console.log(resp)
+
     if (resp != false) {
         return res.json(resp)
     } else {
@@ -71,6 +73,7 @@ router.post('/getpractice', async function (req, res, next) {
 });
 
 router.post('/updatepractice', async function (req, res, next) {
+    console.log(req.body.practice)
     let resp = await PracticeBL.updatePractice(req.body.practice);
     let response = await PracticeBL.addOrRemovePracticeFromStudent(req.body.chosenStudents, req.body.allStudents, req.body.practice);
     if (resp != false) {
@@ -112,6 +115,15 @@ router.post('/getTotalDivisionByMonth', async function (req, res, next) {
     let resp = await PracticeBL.getTotalDivisionByMonth(req.body.userId);
     if (resp != false) {
         return res.json(resp)
+    } else {
+        return res.json(false)
+    }
+});
+
+router.post('/removeFewPractices', async function (req, res, next) {
+    let resp = await PracticeBL.deleteFewPractices(req.body.practices);
+    if (resp==true) {
+        return res.json(true)
     } else {
         return res.json(false)
     }

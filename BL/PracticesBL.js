@@ -106,7 +106,7 @@ const updatePractice = function (practice) {
         PRACTICES_MODEL.findByIdAndUpdate(practice._id,
             {
                 Name: practice.name,
-                Date: practice.date,
+                Date: practice._date,
             }
             , function (err, id) {
                 if (err) {
@@ -237,10 +237,10 @@ const getPracticeAttendancePrecent = async function (practice, userId) {
         let allTrue = list.filter(element => element == true)
         let max = practice.Students.length
         let obj = {
-            result : Math.abs(allTrue.length / max) * 100,
-            date : practice.Date
+            result: Math.abs(allTrue.length / max) * 100,
+            date: practice.Date
         }
-        return obj; 
+        return obj;
         // return (Math.abs(allTrue.length / max) * 100);
     }
 
@@ -347,13 +347,8 @@ const getTotalDivision = async function (userId) {
 }
 
 const getTotalDivisionByMonth = async function (userId) {
-    // let userDay = userObj[0].CreatedDate.split('/')[0]
-    // let userMonth = userObj[0].CreatedDate.split('/')[1]
-    // let allStudents = await StudentsBL.getAllStudentsByUserID(userId);
-    // let userObj = await UserBL.getUserById(userId);
-    // let userYear = userObj[0].CreatedDate.split('/')[2]
-    
-    let arr=[0,0,0,0,0,0,0,0,0,0,0,0]
+
+    let arr = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     let thisYear = new Date().getFullYear();
     let allPractices = await getAllPractices(userId);
     let promises = []
@@ -368,26 +363,50 @@ const getTotalDivisionByMonth = async function (userId) {
     if (list.includes(undefined || false)) {
         return false;
     } else {
-        let newList = list.map(x=>{
+        let newList = list.map(x => {
             let obj = {
                 result: x.result,
-                month:x.date.getMonth()+1,
-                year : x.date.getFullYear()
+                month: x.date.getMonth() + 1,
+                year: x.date.getFullYear()
             }
             return obj
         })
 
-        newList.forEach(obj => {
-            if(obj.year==thisYear){
-                arr[obj.month-1] = (arr[obj.month-1]+obj.result)/2
-            }
-        });
+        console.log(newList)
 
+        for (let i = 0; i < arr.length; i++) {
+
+            let monthArr = newList.filter(x => x.month == i + 1 && x.year == thisYear)
+
+            if (monthArr.length > 0) {
+                monthArr.forEach(obj => {
+                    arr[i] = (arr[i] + obj.result)
+
+                })
+                arr[i] = (arr[i] / monthArr.length).toFixed(2)
+            }
+
+        }
+        console.log(arr)
         return arr;
     }
 
 
 }
 
+const deleteFewPractices = async function (practices) {
+    return new Promise((resolve,reject)=>{
+        PRACTICES_MODEL.deleteMany({_id:{$in:practices}},function(err){
+            if(err){
+                reject(false);
+            }else{
+                resolve(true)
+            }
+        })
+    })
 
-module.exports = { getTotalDivisionByMonth, getTotalDivision, getStudentAttendants, getPracticeAttendancePrecent, addOrRemovePracticeFromStudent, isStudentWasInPractice, getStudentsList, deleteFewStudentsFromPractices, updatePracticeTeam, deleteTeamFromPractice, updatePracticeStudents, deleteStudentFromPractice, updatePractice, deletePractice, getPractice, getAllPractices, addPractice }
+
+}
+
+
+module.exports = { deleteFewPractices, getTotalDivisionByMonth, getTotalDivision, getStudentAttendants, getPracticeAttendancePrecent, addOrRemovePracticeFromStudent, isStudentWasInPractice, getStudentsList, deleteFewStudentsFromPractices, updatePracticeTeam, deleteTeamFromPractice, updatePracticeStudents, deleteStudentFromPractice, updatePractice, deletePractice, getPractice, getAllPractices, addPractice }
