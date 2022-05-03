@@ -272,6 +272,7 @@ const getStudentsList = async function (practiceId, students, userId) {
             let stud = arr.filter(st => st._id == s.Student_ID);
             obj.isChecked = isStudentWasInPractice(arr, s.Student_ID, practiceId)
             obj.isDeleted = false;
+            obj.belt= stud[0].Belt
             obj.Name = stud[0].Name;
             obj._id = s.Student_ID;
             return obj;
@@ -280,6 +281,7 @@ const getStudentsList = async function (practiceId, students, userId) {
             obj.isDeleted = true
             obj.Name = s.Name
             obj._id = s._id
+            obj.belt=s.Belt
             return obj
         }
 
