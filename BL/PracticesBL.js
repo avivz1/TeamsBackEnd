@@ -389,7 +389,6 @@ const getTotalDivisionByMonth = async function (userId) {
             }
 
         }
-        console.log(arr)
         return arr;
     }
 
@@ -406,8 +405,6 @@ const deleteFewPractices = async function (practices) {
             }
         })
     })
-
-
 }
 
 

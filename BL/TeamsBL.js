@@ -101,5 +101,16 @@ const getStudentsDistributionByTeam = async function (userId) {
     }
 }
 
+const deleteFewTeams = async function (teams) {
+    return new Promise((resolve,reject)=>{
+        TEAMS_MODEL.deleteMany({_id:{$in:teams}},function(err){
+            if(err){
+                reject(false);
+            }else{
+                resolve(true)
+            }
+        })
+    })
+}
 
-module.exports = { getStudentsDistributionByTeam, addTeam, updateTeam, deleteTeam, getTeam, getAllTeamsByUserId }
+module.exports = {deleteFewTeams, getStudentsDistributionByTeam, addTeam, updateTeam, deleteTeam, getTeam, getAllTeamsByUserId }

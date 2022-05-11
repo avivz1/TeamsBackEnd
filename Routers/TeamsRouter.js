@@ -64,7 +64,16 @@ router.post('/getdistributionbyTeam',async function(req,response,next){
     }else{
         response.json(false);
     }
+    
+})
 
+router.post('/removeFewTeams',async function(req,response,next){
+    let res = await TeamsBL.deleteFewTeams(req.body.teams);
+    if(res!=false){
+        response.json(res);
+    }else{
+        response.json(false);
+    }
 })
 
     module.exports = router;
