@@ -8,8 +8,6 @@ var TeamsBL = require('../BL/TeamsBL');
 
 
 
-
-
 router.post('/', async function (req, res, next) {
     let isExistsResponse = await usersBL.isUserExists(req.body.inputEmail, req.body.inputPassword);
     return res.json(isExistsResponse);

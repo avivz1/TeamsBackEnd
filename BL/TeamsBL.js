@@ -113,4 +113,19 @@ const deleteFewTeams = async function (teams) {
     })
 }
 
-module.exports = {deleteFewTeams, getStudentsDistributionByTeam, addTeam, updateTeam, deleteTeam, getTeam, getAllTeamsByUserId }
+const addOrUpdateTeamPhoto = async function (photo, teamId) {
+    return new Promise((resolve, reject) => {
+        TEAMS_MODEL.findByIdAndUpdate(teamId, {
+            Image: photo
+        }, function (err) {
+            if (err) {
+                reject(false);
+            } else {
+                resolve(true)
+            }
+        })
+    })
+
+}
+
+module.exports = {addOrUpdateTeamPhoto,deleteFewTeams, getStudentsDistributionByTeam, addTeam, updateTeam, deleteTeam, getTeam, getAllTeamsByUserId }

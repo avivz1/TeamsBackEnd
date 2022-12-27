@@ -12,7 +12,7 @@ const addNewStudent = function (student) {
             Belt: student.belt,
             City: student.city,
             Age: student.age,
-            Image:''
+            Image: ''
         });
         stu.save(function (err, newStudent) {
             if (err) {
@@ -85,7 +85,7 @@ const updateStudentTeamID = function (teamId, stuID) {
     })
 }
 
-const updateStudentPractice = function (practices ,stu_id) {
+const updateStudentPractice = function (practices, stu_id) {
     return new Promise((resolve, reject) => {
         STUDENTS_MODEL.findByIdAndUpdate(stu_id,
             {
@@ -113,8 +113,8 @@ const getStudent = function (id) {
     })
 }
 
-const getFewStudentsByPractice = async function (arr){
-    let promises =[];
+const getFewStudentsByPractice = async function (arr) {
+    let promises = [];
 
     arr.forEach(stu => {
         promises.push(getStudent(stu.Student_ID))
@@ -137,19 +137,31 @@ const getStudentsByTeamId = async function (teamId, userId) {
 }
 
 const deleteFewStudents = async function (studArr) {
-    var deleteStu = [];
-    studArr.forEach(stu => {
-        deleteStu.push(deleteStudentById(stu._id));
+    console.log(studArr)
+    return new Promise((resolve, reject) => {
+        let arr = studArr.filter(s =>{return s._id})
+        STUDENTS_MODEL.deleteMany({ _id: { $in: arr } }, function (err) {
+            if (err) {
+                reject(false);
+            } else {
+                resolve(true)
+            }
+        })
     })
 
-    const allPromises = Promise.all(deleteStu);
-    const list = await allPromises;
+    // var deleteStu = [];
+    // studArr.forEach(stu => {
+    //     deleteStu.push(deleteStudentById(stu._id));
+    // })
 
-    if (list.includes(undefined || false)) {
-        return false;
-    } else {
-        return true;
-    }
+    // const allPromises = Promise.all(deleteStu);
+    // const list = await allPromises;
+
+    // if (list.includes(undefined || false)) {
+    //     return false;
+    // } else {
+    //     return true;
+    // }
 
 }
 
@@ -185,13 +197,13 @@ const addPracticeToSingleStudent = async function (stu_id, practice_id) {
 
 const addPracticeToStudents = async function (pra_id, students) {
     studentsArr = []
-    if(students.length>0){
+    if (students.length > 0) {
         students.forEach(stu_id => {
             studentsArr.push(addPracticeToSingleStudent(stu_id, pra_id))
         })
         const allPromises = Promise.all(studentsArr);
         const list = await allPromises;
-        
+
         if (list.includes(undefined || false)) {
             return false;
         } else {
@@ -202,13 +214,13 @@ const addPracticeToStudents = async function (pra_id, students) {
 
 const deletePracticeFromStudents = async function (p_id, p_students) {
     studentArr = []
-    p_students.forEach(stu =>{
-        studentArr.push(deletePracticeId(stu.Student_ID,p_id))
+    p_students.forEach(stu => {
+        studentArr.push(deletePracticeId(stu.Student_ID, p_id))
     })
-    
+
     const allPromises = Promise.all(studentArr);
     const list = await allPromises;
-    
+
     if (list.includes(undefined || false)) {
         return false;
     } else {
@@ -219,25 +231,25 @@ const deletePracticeFromStudents = async function (p_id, p_students) {
 
 const deletePracticeId = async function (stu_id, p_id) {
     let stu = await getStudent(stu_id);
-    if(stu){
-        let studentsPractices = stu.Practices.filter(s=>s!=p_id)
-        let res = updateStudentPractice(studentsPractices,stu_id)
-        if(res!=false){
+    if (stu) {
+        let studentsPractices = stu.Practices.filter(s => s != p_id)
+        let res = updateStudentPractice(studentsPractices, stu_id)
+        if (res != false) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
 }
 
-const addOrUpdateStudentPhoto = async function (photo,stuId){
-    return new Promise ((resolve,reject)=>{
-        StudentModel.findByIdAndUpdate(stuId,{
-            Image:photo
-        },function(err){
-            if(err){
+const addOrUpdateStudentPhoto = async function (photo, stuId) {
+    return new Promise((resolve, reject) => {
+        StudentModel.findByIdAndUpdate(stuId, {
+            Image: photo
+        }, function (err) {
+            if (err) {
                 reject(false);
-            }else{
+            } else {
                 resolve(true)
             }
         })
@@ -245,5 +257,28 @@ const addOrUpdateStudentPhoto = async function (photo,stuId){
 
 }
 
+const deleteFewStudentsByTeam = async function (teams, userId) {
+    let students = await getAllStudentsByUserID(userId)
+    let stude = students.filter(s => {
+        if (teams.includes(s.Team_ID.toString())) {
+            return s._id;
+        }
+    })
+    // let studentsToDelete = stude.map(st => st._id)
+    return deleteFewStudents(stude);
 
-module.exports = {addOrUpdateStudentPhoto,getFewStudentsByPractice,updateStudentPractice, deletePracticeId, deletePracticeFromStudents, addPracticeToSingleStudent, addPracticeToStudents, changeStudentsTeam, deleteFewStudents, getStudentsByTeamId, addNewStudent, deleteStudentById, getAllStudentsByUserID, updateStudentTeamID, updateStudentSoftDetails, getStudent }
+}
+
+const getFewStudents = async function (studentsArr) {
+    return new Promise((resolve, reject) => {
+        STUDENTS_MODEL.find({ _id: { $in: studentsArr } }, function (err, stus) {
+            if (err) {
+                reject(false)
+            } else {
+                resolve(stus)
+            }
+        })
+    })
+}
+
+module.exports = { getFewStudents, deleteFewStudentsByTeam, addOrUpdateStudentPhoto, getFewStudentsByPractice, updateStudentPractice, deletePracticeId, deletePracticeFromStudents, addPracticeToSingleStudent, addPracticeToStudents, changeStudentsTeam, deleteFewStudents, getStudentsByTeamId, addNewStudent, deleteStudentById, getAllStudentsByUserID, updateStudentTeamID, updateStudentSoftDetails, getStudent }

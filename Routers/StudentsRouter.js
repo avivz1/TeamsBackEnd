@@ -37,7 +37,26 @@ router.post('/deletestudent', async function (req, res, next) {
 });
 
 router.post('/deletefewstudents', async function (req, res, next) {
-    let re = await PracticeBL.deleteFewStudentsFromPractices(req.body.students, req.body.userId);
+    let students = await StudentsBL.getFewStudents(req.body.students)
+    if(students.length>0){
+        let deletePracStatus = await PracticeBL.deleteFewStudentsFromPractices(students, req.body.userId);
+        if(deletePracStatus!=false){
+            let response = await StudentsBL.deleteFewStudents(students);
+            if(response!=false){
+                return res.json(true);
+            }else{
+                return res.json(false);
+            }
+        }else{
+            return res.json(false);
+        }
+    }else{
+        return res.json(false);
+    }
+
+
+    // let students = await StudentsBL.getFewStudents(req.body.students)
+    let deletePracStatus = await PracticeBL.deleteFewStudentsFromPractices(students, req.body.userId);
     let response = await StudentsBL.deleteFewStudents(req.body.students);
     if (response == true) {
         return res.json(true);
@@ -93,6 +112,15 @@ router.post('/addorupdatestudentphoto', async function (req, res, next) {
         return res.json(res1)
     }
 });
+
+// router.post('/deletefewstudents', async function (req, res, next) {
+//     let res1 = await StudentsBL.addOrUpdateStudentPhoto(req.body.photo,req.body.studentId);
+//     if (!res1) {
+//         return res.json(false)
+//     } else {
+//         return res.json(res1)
+//     }
+// });
 
 
 

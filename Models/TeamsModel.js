@@ -8,6 +8,8 @@ let TeamsSchema = new mongoose.Schema({
     CreatedDate:Date,
     Type:String,
     City:String,
+    Image : String
+
 });
 
 module.exports  = mongoose.model('teams',TeamsSchema);

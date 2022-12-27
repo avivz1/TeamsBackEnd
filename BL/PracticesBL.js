@@ -203,7 +203,7 @@ const deleteStudentFromPractice = async function (stu_name, stuId, userid) {
     }
 
 }
-
+//dont have to get the userid, need to change to DelteMany in mongoose
 const deleteFewStudentsFromPractices = async function (students, userId) {
     let deletePractices = []
     students.forEach(stu => {
@@ -215,6 +215,7 @@ const deleteFewStudentsFromPractices = async function (students, userId) {
     if (list.includes(undefined || false)) {
         return false;
     } else {
+        
         return true;
     }
 
@@ -374,7 +375,6 @@ const getTotalDivisionByMonth = async function (userId) {
             return obj
         })
 
-        console.log(newList)
 
         for (let i = 0; i < arr.length; i++) {
 
