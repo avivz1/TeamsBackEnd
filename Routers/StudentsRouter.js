@@ -55,14 +55,14 @@ router.post('/deletefewstudents', async function (req, res, next) {
     }
 
 
-    // let students = await StudentsBL.getFewStudents(req.body.students)
-    let deletePracStatus = await PracticeBL.deleteFewStudentsFromPractices(students, req.body.userId);
-    let response = await StudentsBL.deleteFewStudents(req.body.students);
-    if (response == true) {
-        return res.json(true);
-    } else {
-        return res.json(false);
-    }
+    // // let students = await StudentsBL.getFewStudents(req.body.students)
+    // let deletePracStatus = await PracticeBL.deleteFewStudentsFromPractices(students, req.body.userId);
+    // let response = await StudentsBL.deleteFewStudents(req.body.students);
+    // if (response == true) {
+    //     return res.json(true);
+    // } else {
+    //     return res.json(false);
+    // }
 
 });
 

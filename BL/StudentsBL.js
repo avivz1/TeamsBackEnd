@@ -137,7 +137,6 @@ const getStudentsByTeamId = async function (teamId, userId) {
 }
 
 const deleteFewStudents = async function (studArr) {
-    console.log(studArr)
     return new Promise((resolve, reject) => {
         let arr = studArr.filter(s =>{return s._id})
         STUDENTS_MODEL.deleteMany({ _id: { $in: arr } }, function (err) {

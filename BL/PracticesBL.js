@@ -118,30 +118,75 @@ const updatePractice = function (practice) {
     })
 }
 
-const updatePracticeStudents = function (p_id, students) {
-    return new Promise((resolve, reject) => {
-        PRACTICES_MODEL.findByIdAndUpdate(p_id,
-            {
-                Students: students,
-            }
-            , function (err) {
-                if (err) {
-                    reject(false)
-                } else {
-                    resolve(true)
-                }
-            })
-    })
-}
 
+//4
+//call 1 time (the number of total practices) *4 (the number of total students)
+const updatePracticeStudent = function (p_id, stu) {
+    console.log(stu)
+    return new Promise((resolve, reject) => {
+        
+        PRACTICES_MODEL.updateOne({ _id: p_id, 'Students.Student_ID': stu.Student_ID }, { $set: { 'Students.$.Name': stu.Name } }, function (err, doc) {
+            if (err) {
+                // Handle the error
+                reject(false)
+            } else {
+                resolve(true)
+                // The student has been updated
+            }
+        });
+
+    });
+    
+    // PRACTICES_MODEL.updateOne(
+    //     { '_id': p_id},
+    //     { 'Students._ID': stu.Student_ID},
+    //     { $set: { "Students.$.Name": stu.Name} }
+    // ),
+    // function(err){
+    //     if(err){
+    //         reject(false)
+    //     }else{
+    //         console.log('resolve true')
+    //         resolve(true)
+    //     }
+    // }
+
+        // const query = { _id: p_id, 'array.key': 'Students' };
+        // PRACTICES_MODEL.findOneAndUpdate(query, { $set: { 'array.$.key': stu } }, { new: true }, (error, doc) => {
+        //     // doc contains the updated document
+        //     if(error){
+        //         reject(false)
+        //     }else{
+        //         resolve(true)
+        //     }
+
+    // PRACTICES_MODEL.findOneAndUpdate(query, { $set: { 'array.$.key': newKeyValue } }, { new: true }, (error, doc) => {
+
+
+
+    // PRACTICES_MODEL.findByIdAndUpdate({_id:p_id,'array.key':'Students'},
+    //     {
+    //         Students: stu,
+    //     }
+    //     , function (err) {
+    //         if (err) {
+    //             reject(false)
+    //         } else {
+    //             resolve(true)
+    //         }
+    //     })
+// })
+}
+//3
+//call 1 time (the number of total practices) * 4 (the number of total students)
 const getPracticeAndDeleteStudent = async function (practice, stuId, stu_name) {
-    practice.Students.forEach(st => {
-        if (stuId == st.Student_ID) {
+    practice.Students.forEach((st) => {
+        if (stuId.toString() == st.Student_ID.toString()) {
             st.Name = stu_name
+            updatePracticeStudent(practice._id, st)
         }
     })
-    return updatePracticeStudents(practice._id, practice.Students)
-
+    // return updatePracticeStudents(practice._id, practice.Students)
 }
 
 const updatePracticeTeam = function (p_id, team) {
@@ -185,11 +230,12 @@ const deleteTeamFromPractice = async function (team, userid) {
 
 
 }
-
+//2
+//call 4 times ( the numbers of total students)
 const deleteStudentFromPractice = async function (stu_name, stuId, userid) {
     let practices = []
     let practicesFromDB = await getAllPractices(userid);
-    practicesFromDB.forEach(pra => {
+    practicesFromDB.forEach((pra) => {
         practices.push(getPracticeAndDeleteStudent(pra, stuId, stu_name))
     })
 
@@ -204,9 +250,10 @@ const deleteStudentFromPractice = async function (stu_name, stuId, userid) {
 
 }
 //dont have to get the userid, need to change to DelteMany in mongoose
+//1
 const deleteFewStudentsFromPractices = async function (students, userId) {
     let deletePractices = []
-    students.forEach(stu => {
+    students.forEach((stu) => {
         deletePractices.push(deleteStudentFromPractice(stu.Name, stu._id, userId))
     })
     const allPromises = Promise.all(deletePractices);
@@ -215,7 +262,7 @@ const deleteFewStudentsFromPractices = async function (students, userId) {
     if (list.includes(undefined || false)) {
         return false;
     } else {
-        
+
         return true;
     }
 
@@ -273,7 +320,7 @@ const getStudentsList = async function (practiceId, students, userId) {
             let stud = arr.filter(st => st._id == s.Student_ID);
             obj.isChecked = isStudentWasInPractice(arr, s.Student_ID, practiceId)
             obj.isDeleted = false;
-            obj.belt= stud[0].Belt
+            obj.belt = stud[0].Belt
             obj.Name = stud[0].Name;
             obj._id = s.Student_ID;
             return obj;
@@ -282,7 +329,7 @@ const getStudentsList = async function (practiceId, students, userId) {
             obj.isDeleted = true
             obj.Name = s.Name
             obj._id = s._id
-            obj.belt=s.Belt
+            obj.belt = s.Belt
             return obj
         }
 
@@ -396,11 +443,11 @@ const getTotalDivisionByMonth = async function (userId) {
 }
 
 const deleteFewPractices = async function (practices) {
-    return new Promise((resolve,reject)=>{
-        PRACTICES_MODEL.deleteMany({_id:{$in:practices}},function(err){
-            if(err){
+    return new Promise((resolve, reject) => {
+        PRACTICES_MODEL.deleteMany({ _id: { $in: practices } }, function (err) {
+            if (err) {
                 reject(false);
-            }else{
+            } else {
                 resolve(true)
             }
         })
@@ -408,4 +455,4 @@ const deleteFewPractices = async function (practices) {
 }
 
 
-module.exports = { deleteFewPractices, getTotalDivisionByMonth, getTotalDivision, getStudentAttendants, getPracticeAttendancePrecent, addOrRemovePracticeFromStudent, isStudentWasInPractice, getStudentsList, deleteFewStudentsFromPractices, updatePracticeTeam, deleteTeamFromPractice, updatePracticeStudents, deleteStudentFromPractice, updatePractice, deletePractice, getPractice, getAllPractices, addPractice }
+module.exports = { deleteFewPractices, getTotalDivisionByMonth, getTotalDivision, getStudentAttendants, getPracticeAttendancePrecent, addOrRemovePracticeFromStudent, isStudentWasInPractice, getStudentsList, deleteFewStudentsFromPractices, updatePracticeTeam, deleteTeamFromPractice, updatePracticeStudent, deleteStudentFromPractice, updatePractice, deletePractice, getPractice, getAllPractices, addPractice }
