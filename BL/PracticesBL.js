@@ -122,7 +122,6 @@ const updatePractice = function (practice) {
 //4
 //call 1 time (the number of total practices) *4 (the number of total students)
 const updatePracticeStudent = function (p_id, stu) {
-    console.log(stu)
     return new Promise((resolve, reject) => {
         
         PRACTICES_MODEL.updateOne({ _id: p_id, 'Students.Student_ID': stu.Student_ID }, { $set: { 'Students.$.Name': stu.Name } }, function (err, doc) {
@@ -136,46 +135,8 @@ const updatePracticeStudent = function (p_id, stu) {
         });
 
     });
-    
-    // PRACTICES_MODEL.updateOne(
-    //     { '_id': p_id},
-    //     { 'Students._ID': stu.Student_ID},
-    //     { $set: { "Students.$.Name": stu.Name} }
-    // ),
-    // function(err){
-    //     if(err){
-    //         reject(false)
-    //     }else{
-    //         console.log('resolve true')
-    //         resolve(true)
-    //     }
-    // }
+         resolve(true)
 
-        // const query = { _id: p_id, 'array.key': 'Students' };
-        // PRACTICES_MODEL.findOneAndUpdate(query, { $set: { 'array.$.key': stu } }, { new: true }, (error, doc) => {
-        //     // doc contains the updated document
-        //     if(error){
-        //         reject(false)
-        //     }else{
-        //         resolve(true)
-        //     }
-
-    // PRACTICES_MODEL.findOneAndUpdate(query, { $set: { 'array.$.key': newKeyValue } }, { new: true }, (error, doc) => {
-
-
-
-    // PRACTICES_MODEL.findByIdAndUpdate({_id:p_id,'array.key':'Students'},
-    //     {
-    //         Students: stu,
-    //     }
-    //     , function (err) {
-    //         if (err) {
-    //             reject(false)
-    //         } else {
-    //             resolve(true)
-    //         }
-    //     })
-// })
 }
 //3
 //call 1 time (the number of total practices) * 4 (the number of total students)

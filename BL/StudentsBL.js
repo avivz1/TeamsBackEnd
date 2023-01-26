@@ -148,19 +148,6 @@ const deleteFewStudents = async function (studArr) {
         })
     })
 
-    // var deleteStu = [];
-    // studArr.forEach(stu => {
-    //     deleteStu.push(deleteStudentById(stu._id));
-    // })
-
-    // const allPromises = Promise.all(deleteStu);
-    // const list = await allPromises;
-
-    // if (list.includes(undefined || false)) {
-    //     return false;
-    // } else {
-    //     return true;
-    // }
 
 }
 
@@ -280,4 +267,20 @@ const getFewStudents = async function (studentsArr) {
     })
 }
 
-module.exports = { getFewStudents, deleteFewStudentsByTeam, addOrUpdateStudentPhoto, getFewStudentsByPractice, updateStudentPractice, deletePracticeId, deletePracticeFromStudents, addPracticeToSingleStudent, addPracticeToStudents, changeStudentsTeam, deleteFewStudents, getStudentsByTeamId, addNewStudent, deleteStudentById, getAllStudentsByUserID, updateStudentTeamID, updateStudentSoftDetails, getStudent }
+const getBeltsAverage = async function(userId){
+    let map = new Map();
+    map.set('white',0)
+    map.set('yellow',0)
+    map.set('orange',0)
+    map.set('green',0)
+    map.set('blue',0)
+    map.set('brown',0)
+    map.set('black',0)
+    let students = await getAllStudentsByUserID(userId);
+    students.forEach(stu => {
+        map.set(stu.Belt,((((map.get(stu.Belt)+1))/students.length)*100).toFixed(2))
+    });
+    return map;
+}
+
+module.exports = {getBeltsAverage, getFewStudents, deleteFewStudentsByTeam, addOrUpdateStudentPhoto, getFewStudentsByPractice, updateStudentPractice, deletePracticeId, deletePracticeFromStudents, addPracticeToSingleStudent, addPracticeToStudents, changeStudentsTeam, deleteFewStudents, getStudentsByTeamId, addNewStudent, deleteStudentById, getAllStudentsByUserID, updateStudentTeamID, updateStudentSoftDetails, getStudent }

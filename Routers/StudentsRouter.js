@@ -54,16 +54,6 @@ router.post('/deletefewstudents', async function (req, res, next) {
         return res.json(false);
     }
 
-
-    // // let students = await StudentsBL.getFewStudents(req.body.students)
-    // let deletePracStatus = await PracticeBL.deleteFewStudentsFromPractices(students, req.body.userId);
-    // let response = await StudentsBL.deleteFewStudents(req.body.students);
-    // if (response == true) {
-    //     return res.json(true);
-    // } else {
-    //     return res.json(false);
-    // }
-
 });
 
 router.post('/changestudentsteams', async function (req, res, next) {
@@ -112,6 +102,16 @@ router.post('/addorupdatestudentphoto', async function (req, res, next) {
         return res.json(res1)
     }
 });
+
+router.post('/getBeltsAverage',async function(req,res,next){
+    let res1= await StudentsBL.getBeltsAverage(req.body.userId);
+    if(!res1){
+        return res.json(false)
+    }else{
+        return res.json([...res1])
+        // return res1
+    }
+})
 
 // router.post('/deletefewstudents', async function (req, res, next) {
 //     let res1 = await StudentsBL.addOrUpdateStudentPhoto(req.body.photo,req.body.studentId);
