@@ -6,8 +6,15 @@ var PracticeBL = require('../BL/PracticesBL');
 var TeamsBL = require('../BL/TeamsBL');
 
 
-
-
+router.post('/getuserdetails', async function (req, res, next) {
+    let userDetails = await usersBL.getUserLoginDetails(req.body.userId);
+    if(userDetails){
+        return res.json(userDetails)
+    }else{
+        return res.json(false)
+    }
+    
+});
 router.post('/', async function (req, res, next) {
     let isExistsResponse = await usersBL.isUserExists(req.body.inputEmail, req.body.inputPassword);
     return res.json(isExistsResponse);

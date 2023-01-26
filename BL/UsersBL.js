@@ -107,4 +107,14 @@ const getUserById = async function (userId){
     })
 }
 
-module.exports = {getUserById, isUserExists, getAllUsers, addNewUser, updateUser, deleteUser, getUserID, isUserNameAvailable }
+const getUserLoginDetails = async function (id){
+    let users = await getAllUsers();
+    let user = users.filter(x => x._id.toString() == id.toString());
+    if (user.length > 0) {
+        return user[0];
+    } else {
+        return false;
+    }
+}
+
+module.exports = {getUserLoginDetails,getUserById, isUserExists, getAllUsers, addNewUser, updateUser, deleteUser, getUserID, isUserNameAvailable }
