@@ -95,7 +95,6 @@ const getStudentsDistributionByTeam = async function (userId) {
         obj.studQuantity=((obj.studQuantity/allStudents.length)*100).toFixed(2)
         return obj;
     });
-    console.log(finishedArr)
     if (finishedArr.length > 0) {
         return finishedArr;
     } else {

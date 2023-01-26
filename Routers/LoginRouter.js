@@ -18,13 +18,13 @@ router.post('/adddata', async function (req, res, next) {
     let team1_obj = {
         name: 'Judo Power',
         userID: req.body.userId,
-        type: '10-12',
+        type: '12',
         city: 'Kfar Saba',
     }
     let team2_obj = {
         name: 'Champions',
         userID: req.body.userId,
-        type: '6-10',
+        type: '10',
         city: 'Zofim',
     }
 
