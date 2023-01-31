@@ -9,6 +9,7 @@ var TeamsBL = require('../BL/TeamsBL');
 router.post('/getuserdetails', async function (req, res, next) {
     let userDetails = await usersBL.getUserLoginDetails(req.body.userId);
     if (userDetails) {
+        // res.status(200).send('hi')
         return res.json(userDetails)
     } else {
         return res.json(false)
