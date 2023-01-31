@@ -42,7 +42,7 @@ router.post('/adddata', async function (req, res, next) {
         userid: req.body.userId,
         teamID: team1_id,
         name: 'Itay',
-        belt: 'Yellow',
+        belt: 'yellow',
         city: 'Kfar Saba',
         age: 11,
         Image: ''
@@ -51,7 +51,7 @@ router.post('/adddata', async function (req, res, next) {
         userid: req.body.userId,
         teamID: team1_id,
         name: 'Yossi',
-        belt: 'White',
+        belt: 'white',
         city: 'Kfar Saba',
         age: 12,
         Image: ''
@@ -60,7 +60,7 @@ router.post('/adddata', async function (req, res, next) {
         userid: req.body.userId,
         teamID: team2_id,
         name: 'Nadav',
-        belt: 'Blue',
+        belt: 'blue',
         city: 'Zofim',
         age: 11,
         Image: ''
@@ -69,7 +69,7 @@ router.post('/adddata', async function (req, res, next) {
         userid: req.body.userId,
         teamID: team2_id,
         name: 'Tal',
-        belt: 'Green',
+        belt: 'green',
         city: 'Zofim',
         age: 12,
         Image: ''
