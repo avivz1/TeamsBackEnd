@@ -92,8 +92,13 @@ const getStudentsDistributionByTeam = async function (userId) {
                 obj.studQuantity = obj.studQuantity + 1;
             }
         })
-        obj.studQuantity=((obj.studQuantity/allStudents.length)*100).toFixed(2)
-        return obj;
+        console.log(obj.studQuantity)
+        if (obj.studQuantity == 0) {
+            return obj;
+        } else {
+            obj.studQuantity = ((obj.studQuantity / allStudents.length) * 100).toFixed(2)
+            return obj;
+        }
     });
     if (finishedArr.length > 0) {
         return finishedArr;
@@ -103,11 +108,11 @@ const getStudentsDistributionByTeam = async function (userId) {
 }
 
 const deleteFewTeams = async function (teams) {
-    return new Promise((resolve,reject)=>{
-        TEAMS_MODEL.deleteMany({_id:{$in:teams}},function(err){
-            if(err){
+    return new Promise((resolve, reject) => {
+        TEAMS_MODEL.deleteMany({ _id: { $in: teams } }, function (err) {
+            if (err) {
                 reject(false);
-            }else{
+            } else {
                 resolve(true)
             }
         })
@@ -129,4 +134,4 @@ const addOrUpdateTeamPhoto = async function (photo, teamId) {
 
 }
 
-module.exports = {addOrUpdateTeamPhoto,deleteFewTeams, getStudentsDistributionByTeam, addTeam, updateTeam, deleteTeam, getTeam, getAllTeamsByUserId }
+module.exports = { addOrUpdateTeamPhoto, deleteFewTeams, getStudentsDistributionByTeam, addTeam, updateTeam, deleteTeam, getTeam, getAllTeamsByUserId }
