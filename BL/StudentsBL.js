@@ -1,4 +1,3 @@
-const StudentModel = require('../Models/StudentModel');
 const STUDENTS_MODEL = require('../Models/StudentModel');
 
 
@@ -230,7 +229,7 @@ const deletePracticeId = async function (stu_id, p_id) {
 
 const addOrUpdateStudentPhoto = async function (photo, stuId) {
     return new Promise((resolve, reject) => {
-        StudentModel.findByIdAndUpdate(stuId, {
+        STUDENTS_MODEL.findByIdAndUpdate(stuId, {
             Image: photo
         }, function (err) {
             if (err) {
@@ -283,4 +282,17 @@ const getBeltsAverage = async function(userId){
     return map;
 }
 
-module.exports = {getBeltsAverage, getFewStudents, deleteFewStudentsByTeam, addOrUpdateStudentPhoto, getFewStudentsByPractice, updateStudentPractice, deletePracticeId, deletePracticeFromStudents, addPracticeToSingleStudent, addPracticeToStudents, changeStudentsTeam, deleteFewStudents, getStudentsByTeamId, addNewStudent, deleteStudentById, getAllStudentsByUserID, updateStudentTeamID, updateStudentSoftDetails, getStudent }
+const resetDb = async function (){
+    return new Promise((resolve,reject)=>{
+        STUDENTS_MODEL.deleteMany({},function(err){
+            if(err){
+                reject(err)
+            }else{
+                resolve(true)
+            }
+        })
+
+    })
+}
+
+module.exports = {resetDb,getBeltsAverage, getFewStudents, deleteFewStudentsByTeam, addOrUpdateStudentPhoto, getFewStudentsByPractice, updateStudentPractice, deletePracticeId, deletePracticeFromStudents, addPracticeToSingleStudent, addPracticeToStudents, changeStudentsTeam, deleteFewStudents, getStudentsByTeamId, addNewStudent, deleteStudentById, getAllStudentsByUserID, updateStudentTeamID, updateStudentSoftDetails, getStudent }

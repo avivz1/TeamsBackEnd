@@ -92,7 +92,6 @@ const getStudentsDistributionByTeam = async function (userId) {
                 obj.studQuantity = obj.studQuantity + 1;
             }
         })
-        console.log(obj.studQuantity)
         if (obj.studQuantity == 0) {
             return obj;
         } else {
@@ -134,4 +133,17 @@ const addOrUpdateTeamPhoto = async function (photo, teamId) {
 
 }
 
-module.exports = { addOrUpdateTeamPhoto, deleteFewTeams, getStudentsDistributionByTeam, addTeam, updateTeam, deleteTeam, getTeam, getAllTeamsByUserId }
+const resetDb = async function (){
+    return new Promise((resolve,reject)=>{
+        TEAMS_MODEL.deleteMany({},function(err){
+            if(err){
+                reject(err)
+            }else{
+                resolve(true)
+            }
+        })
+
+    })
+}
+
+module.exports = {resetDb, addOrUpdateTeamPhoto, deleteFewTeams, getStudentsDistributionByTeam, addTeam, updateTeam, deleteTeam, getTeam, getAllTeamsByUserId }

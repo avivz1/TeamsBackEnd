@@ -117,4 +117,17 @@ const getUserLoginDetails = async function (id){
     }
 }
 
-module.exports = {getUserLoginDetails,getUserById, isUserExists, getAllUsers, addNewUser, updateUser, deleteUser, getUserID, isUserNameAvailable }
+const resetDb = async function (){
+    return new Promise((resolve,reject)=>{
+        USERS_MODEL.deleteMany({},function(err){
+            if(err){
+                reject(err)
+            }else{
+                resolve(true)
+            }
+        })
+
+    })
+}
+
+module.exports = {resetDb,getUserLoginDetails,getUserById, isUserExists, getAllUsers, addNewUser, updateUser, deleteUser, getUserID, isUserNameAvailable }

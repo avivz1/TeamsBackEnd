@@ -61,13 +61,16 @@ const getAllPractices = function (userid) {
 
 const addPractice = function (practice, students) {
     return new Promise((resolve, reject) => {
-        let stus = students.map(id => {
-            let obj = {
-                Name: null,
-                Student_ID: id
-            }
-            return obj;
-        })
+        let stus = []
+        if (students.length > 0) {
+            stus = students.map(id => {
+                let obj = {
+                    Name: null,
+                    Student_ID: id
+                }
+                return obj;
+            })
+        }
 
         const p = new PRACTICES_MODEL({
             User_ID: practice.userid,
@@ -123,7 +126,7 @@ const updatePractice = function (practice) {
 //call 1 time (the number of total practices) *4 (the number of total students)
 const updatePracticeStudent = function (p_id, stu) {
     return new Promise((resolve, reject) => {
-        
+
         PRACTICES_MODEL.updateOne({ _id: p_id, 'Students.Student_ID': stu.Student_ID }, { $set: { 'Students.$.Name': stu.Name } }, function (err, doc) {
             if (err) {
                 // Handle the error
@@ -135,7 +138,7 @@ const updatePracticeStudent = function (p_id, stu) {
         });
 
     });
-         resolve(true)
+    resolve(true)
 
 }
 //3
@@ -415,5 +418,18 @@ const deleteFewPractices = async function (practices) {
     })
 }
 
+const resetDb = async function () {
+    return new Promise((resolve, reject) => {
+        PRACTICES_MODEL.deleteMany({}, function (err) {
+            if (err) {
+                reject(err)
+            } else {
+                resolve(true)
+            }
+        })
 
-module.exports = { deleteFewPractices, getTotalDivisionByMonth, getTotalDivision, getStudentAttendants, getPracticeAttendancePrecent, addOrRemovePracticeFromStudent, isStudentWasInPractice, getStudentsList, deleteFewStudentsFromPractices, updatePracticeTeam, deleteTeamFromPractice, updatePracticeStudent, deleteStudentFromPractice, updatePractice, deletePractice, getPractice, getAllPractices, addPractice }
+    })
+}
+
+
+module.exports = { resetDb, deleteFewPractices, getTotalDivisionByMonth, getTotalDivision, getStudentAttendants, getPracticeAttendancePrecent, addOrRemovePracticeFromStudent, isStudentWasInPractice, getStudentsList, deleteFewStudentsFromPractices, updatePracticeTeam, deleteTeamFromPractice, updatePracticeStudent, deleteStudentFromPractice, updatePractice, deletePractice, getPractice, getAllPractices, addPractice }

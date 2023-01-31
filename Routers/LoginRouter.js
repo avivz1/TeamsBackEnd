@@ -8,12 +8,12 @@ var TeamsBL = require('../BL/TeamsBL');
 
 router.post('/getuserdetails', async function (req, res, next) {
     let userDetails = await usersBL.getUserLoginDetails(req.body.userId);
-    if(userDetails){
+    if (userDetails) {
         return res.json(userDetails)
-    }else{
+    } else {
         return res.json(false)
     }
-    
+
 });
 router.post('/', async function (req, res, next) {
     let isExistsResponse = await usersBL.isUserExists(req.body.inputEmail, req.body.inputPassword);
@@ -45,7 +45,7 @@ router.post('/adddata', async function (req, res, next) {
         belt: 'Yellow',
         city: 'Kfar Saba',
         age: 11,
-        Image:''
+        Image: ''
     }
     let stu2_obj = {
         userid: req.body.userId,
@@ -54,7 +54,7 @@ router.post('/adddata', async function (req, res, next) {
         belt: 'White',
         city: 'Kfar Saba',
         age: 12,
-        Image:''
+        Image: ''
     }
     let stu3_obj = {
         userid: req.body.userId,
@@ -63,7 +63,7 @@ router.post('/adddata', async function (req, res, next) {
         belt: 'Blue',
         city: 'Zofim',
         age: 11,
-        Image:''
+        Image: ''
     }
     let stu4_obj = {
         userid: req.body.userId,
@@ -72,7 +72,7 @@ router.post('/adddata', async function (req, res, next) {
         belt: 'Green',
         city: 'Zofim',
         age: 12,
-        Image:''
+        Image: ''
     }
     let stu1_id = await StudentsBL.addNewStudent(stu1_obj);
     let stu2_id = await StudentsBL.addNewStudent(stu2_obj);
@@ -103,8 +103,20 @@ router.post('/backupdb', async function (req, res, next) {
     let teams = await TeamsBL.getAllTeamsByUserId(req.body.userId);
     let students = await StudentsBL.getAllStudentsByUserID(req.body.userId);
 
-    return res.json([practices,teams,students]);
+    return res.json([practices, teams, students]);
 
+
+});
+
+router.post('/resetdb', async function (req, res, next) {
+    let stuStatus = await StudentsBL.resetDb();
+    let pracStatus = await PracticeBL.resetDb();
+    let teamStatus = await TeamsBL.resetDb();
+    if (stuStatus&&pracStatus&&teamStatus) {
+        return res.json(true)
+    } else {
+        return res.json(false)
+    }
 
 });
 
