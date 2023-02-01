@@ -43,11 +43,13 @@ const getUserID = async function (email, password) {
 
 };
 
-const addNewUser = async function (email, password) {
+const addNewUser = async function (userData) {
     return new Promise((resolve, reject) => {
         const user = new USERS_MODEL({
-            Email: email,
-            Password: password,
+            Email: userData.inputEmail,
+            Password: userData.inputPassword,
+            SecurityQestion:userData.securityQ,
+            SecurityAnswer:userData.securityA,
             CreatedDate: new Date().getDate() + '/' + (new Date().getMonth() + 1 + '/' + new Date().getFullYear()),
         })
         user.save(function (err, newUser) {

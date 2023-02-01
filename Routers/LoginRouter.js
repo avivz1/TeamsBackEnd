@@ -89,7 +89,7 @@ router.post('/signup', async function (req, res, next) {
     if (!isUserAvailable) {
         return res.json(false);
     } else {
-        let newUserID = await usersBL.addNewUser(req.body.inputEmail, req.body.inputPassword);
+        let newUserID = await usersBL.addNewUser(req.body);
         if (newUserID) {
             return res.json(newUserID);
         } else {
@@ -113,7 +113,7 @@ router.post('/resetdb', async function (req, res, next) {
     let stuStatus = await StudentsBL.resetDb();
     let pracStatus = await PracticeBL.resetDb();
     let teamStatus = await TeamsBL.resetDb();
-    if (stuStatus&&pracStatus&&teamStatus) {
+    if (stuStatus && pracStatus && teamStatus) {
         return res.json(true)
     } else {
         return res.json(false)
