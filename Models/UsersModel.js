@@ -4,7 +4,7 @@ let UsersSchema = new mongoose.Schema({
    Email:String,
    Password:String,
    CreatedDate:String,
-   SecurityQestion:String,
+   SecurityQuestion:String,
    SecurityAnswer:String,
 });
 

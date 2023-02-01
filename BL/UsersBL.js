@@ -48,7 +48,7 @@ const addNewUser = async function (userData) {
         const user = new USERS_MODEL({
             Email: userData.inputEmail,
             Password: userData.inputPassword,
-            SecurityQestion:userData.securityQ,
+            SecurityQuestion:userData.securityQ,
             SecurityAnswer:userData.securityA,
             CreatedDate: new Date().getDate() + '/' + (new Date().getMonth() + 1 + '/' + new Date().getFullYear()),
         })
