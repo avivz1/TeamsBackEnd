@@ -1,5 +1,23 @@
 const USERS_MODEL = require('../Models/UsersModel');
 
+//this func should get token as well
+const validateUserForDbReset= async function (id,password){
+    let user = await getUserById(id)
+    if(user.length>0){
+
+        if(user[0].Password==password){
+            console.log(true)
+            return true;
+        }else{
+            console.log(false)
+            return false;
+        }
+
+
+    }
+    
+}
+
 const updateUser = async function (id, user) {
     return new Promise((resolve, reject) => {
         USERS_MODEL.findOneAndUpdate(id, {
@@ -132,4 +150,4 @@ const resetDb = async function (){
     })
 }
 
-module.exports = {resetDb,getUserLoginDetails,getUserById, isUserExists, getAllUsers, addNewUser, updateUser, deleteUser, getUserID, isUserNameAvailable }
+module.exports = {validateUserForDbReset,resetDb,getUserLoginDetails,getUserById, isUserExists, getAllUsers, addNewUser, updateUser, deleteUser, getUserID, isUserNameAvailable }
