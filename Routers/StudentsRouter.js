@@ -14,6 +14,16 @@ router.post('/addstudent', async function (req, res, next) {
 
 });
 
+router.post('/addnewstudentactivity', async function (req, res, next) {
+    let response = await StudentsBL.addNewActivity(req.body);
+    if (response) {
+        return res.json(response.Activities);
+    } else {
+        return res.json(false);
+    }
+
+});
+
 router.post('/getFewStudents', async function (req, res, next) {
     let response = await StudentsBL.getFewStudentsByPractice(req.body.students);
     if (response!=false) {
