@@ -12,7 +12,7 @@ let StudentSchema = new mongoose.Schema({
     Image: String,
     Phone: Number,
     EmergencyContact: { Name: String, Phone: Number },
-    Activities: [{ Event: String, Note: String }]
+    Activities: [{ Event: String, Note: String,Date:String }]
 
 
 });

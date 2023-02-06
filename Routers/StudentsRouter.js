@@ -119,20 +119,26 @@ router.post('/getBeltsAverage',async function(req,res,next){
         return res.json(false)
     }else{
         return res.json([...res1])
-        // return res1
     }
 })
 
-// router.post('/deletefewstudents', async function (req, res, next) {
-//     let res1 = await StudentsBL.addOrUpdateStudentPhoto(req.body.photo,req.body.studentId);
-//     if (!res1) {
-//         return res.json(false)
-//     } else {
-//         return res.json(res1)
-//     }
-// });
+router.post('/deleteactivity',async function(req,res,next){
+    let resp= await StudentsBL.deleteActivity(req.body);
+    if(resp){
+        return res.json(true)
+    }else{
+        return res.json(false)
+    }
+})
 
-
+router.post('/getstudentactivities',async function(req,res,next){
+    let resp= await StudentsBL.getStudentActivities(req.body);
+    if(resp){
+        return res.json(resp)
+    }else{
+        return res.json(false)
+    }
+})
 
 
 

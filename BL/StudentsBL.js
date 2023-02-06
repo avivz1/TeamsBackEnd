@@ -302,7 +302,7 @@ const resetDb = async function () {
 
 const addNewActivity = async function (data) {
     return new Promise((resolve, reject) => {
-        STUDENTS_MODEL.findByIdAndUpdate(data.stuId, { "$push": { "Activities": data.activity } }, function (err,data) {
+        STUDENTS_MODEL.findByIdAndUpdate(data.stuId, { "$push": { "Activities": data.activity } }, function (err, data) {
             if (err) {
                 reject(err)
             } else {
@@ -312,5 +312,21 @@ const addNewActivity = async function (data) {
     })
 }
 
+const deleteActivity = async function (data) {
+    return new Promise((resolve, reject) => {
+        STUDENTS_MODEL.updateOne({_id:data.stuId}, { "$pull": { "Activities": { _id: data.activity._id } } }, function (err, data) {
+            if (err) {
+                reject(false)
+            } else {
+                resolve(true)
+            }
+        })
+    })
+}
 
-module.exports = { addNewActivity, resetDb, getBeltsAverage, getFewStudents, deleteFewStudentsByTeam, addOrUpdateStudentPhoto, getFewStudentsByPractice, updateStudentPractice, deletePracticeId, deletePracticeFromStudents, addPracticeToSingleStudent, addPracticeToStudents, changeStudentsTeam, deleteFewStudents, getStudentsByTeamId, addNewStudent, deleteStudentById, getAllStudentsByUserID, updateStudentTeamID, updateStudentSoftDetails, getStudent }
+const getStudentActivities = async function (data){
+    let student = await getStudent(data.stuId);
+    return student.Activities;
+}
+
+module.exports = {getStudentActivities, deleteActivity, addNewActivity, resetDb, getBeltsAverage, getFewStudents, deleteFewStudentsByTeam, addOrUpdateStudentPhoto, getFewStudentsByPractice, updateStudentPractice, deletePracticeId, deletePracticeFromStudents, addPracticeToSingleStudent, addPracticeToStudents, changeStudentsTeam, deleteFewStudents, getStudentsByTeamId, addNewStudent, deleteStudentById, getAllStudentsByUserID, updateStudentTeamID, updateStudentSoftDetails, getStudent }
