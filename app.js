@@ -4,7 +4,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require('cors');
 
-var usersRouter = require('./Routers/users');
+var usersRouter = require('./Routers/UsersRouter');
 var LoginRouter = require('./Routers/LoginRouter');
 var StudentsRouter = require('./Routers/StudentsRouter');
 var TeamsRouter = require('./Routers/TeamsRouter');

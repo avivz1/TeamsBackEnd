@@ -18,24 +18,24 @@ const validateUserForDbReset= async function (id,password){
     
 }
 
-const updateUser = async function (id, user) {
-    return new Promise((resolve, reject) => {
-        USERS_MODEL.findOneAndUpdate(id, {
-            Email: user.email,
-            Password: user.password
+// const updateUser = async function (id, user) {
+//     return new Promise((resolve, reject) => {
+//         USERS_MODEL.findOneAndUpdate(id, {
+//             Email: user.email,
+//             Password: user.password
 
-        }, function (err) {
+//         }, function (err) {
 
-            if (err) {
-                reject(err);
-            } else {
-                resolve(true)
-            }
-        })
+//             if (err) {
+//                 reject(err);
+//             } else {
+//                 resolve(true)
+//             }
+//         })
 
-    })
+//     })
 
-}
+// }
 
 const deleteUser = async function (id) {
     return new Promise((resolve, reject) => {
@@ -150,4 +150,23 @@ const resetDb = async function (){
     })
 }
 
-module.exports = {validateUserForDbReset,resetDb,getUserLoginDetails,getUserById, isUserExists, getAllUsers, addNewUser, updateUser, deleteUser, getUserID, isUserNameAvailable }
+const updateUserCredentials = async function (user){
+    return new Promise((resolve,reject)=>{
+        USERS_MODEL.findOneAndUpdate(user.userId,{"$set":
+        {
+            Email:user.email,
+            Password:user.password,
+            SecurityQuestion:user.securityQuestion,
+            SecurityAnswer:user.securityAnswer
+        }},function(err,data){
+            if(err){
+                reject(false)
+            }else{
+                resolve(data)
+            }
+        })
+    })
+    
+} 
+
+module.exports = {updateUserCredentials,validateUserForDbReset,resetDb,getUserLoginDetails,getUserById, isUserExists, getAllUsers, addNewUser, deleteUser, getUserID, isUserNameAvailable }

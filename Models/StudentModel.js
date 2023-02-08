@@ -10,8 +10,8 @@ let StudentSchema = new mongoose.Schema({
     City: String,
     Practices: [mongoose.ObjectId],
     Image: String,
-    Phone: Number,
-    EmergencyContact: { Name: String, Phone: Number },
+    Phone: String,
+    EmergencyContact: { Name: String, Phone: String },
     Activities: [{ Event: String, Note: String,Date:String }]
 
 
