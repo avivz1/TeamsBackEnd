@@ -16,9 +16,8 @@ router.post('/updateuserdetails', async function (req, res, next) {
 })
 
 router.post('/forgotpassword', async function (req, res, next) {
-  let resp = await usersBL.forgotPassword(req.body);
+  let resp = await usersBL.forgotPassword(req.body.user);
   if (resp) {
-    console.log(resp)
     res.json(resp);
   } else {
     res.json(false);

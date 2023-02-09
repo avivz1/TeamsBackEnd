@@ -26,7 +26,7 @@ router.post('/addnewstudentactivity', async function (req, res, next) {
 
 router.post('/getFewStudents', async function (req, res, next) {
     let response = await StudentsBL.getFewStudentsByPractice(req.body.students);
-    if (response!=false) {
+    if (response != false) {
         return res.json(response);
     } else {
         return res.json(false);
@@ -48,19 +48,19 @@ router.post('/deletestudent', async function (req, res, next) {
 
 router.post('/deletefewstudents', async function (req, res, next) {
     let students = await StudentsBL.getFewStudents(req.body.students)
-    if(students.length>0){
+    if (students.length > 0) {
         let deletePracStatus = await PracticeBL.deleteFewStudentsFromPractices(students, req.body.userId);
-        if(deletePracStatus!=false){
+        if (deletePracStatus != false) {
             let response = await StudentsBL.deleteFewStudents(students);
-            if(response!=false){
+            if (response != false) {
                 return res.json(true);
-            }else{
+            } else {
                 return res.json(false);
             }
-        }else{
+        } else {
             return res.json(false);
         }
-    }else{
+    } else {
         return res.json(false);
     }
 
@@ -77,6 +77,7 @@ router.post('/changestudentsteams', async function (req, res, next) {
 });
 
 router.post('/editstudent', async function (req, res, next) {
+    console.log(req.body.Team_ID)
     let response = await StudentsBL.updateStudentSoftDetails(req.body);
     if (response) {
         return res.json(true);
@@ -105,7 +106,7 @@ router.post('/getallstudentsbyuserid', async function (req, res, next) {
 });
 
 router.post('/addorupdatestudentphoto', async function (req, res, next) {
-    let res1 = await StudentsBL.addOrUpdateStudentPhoto(req.body.photo,req.body.studentId);
+    let res1 = await StudentsBL.addOrUpdateStudentPhoto(req.body.photo, req.body.studentId);
     if (!res1) {
         return res.json(false)
     } else {
@@ -113,29 +114,29 @@ router.post('/addorupdatestudentphoto', async function (req, res, next) {
     }
 });
 
-router.post('/getBeltsAverage',async function(req,res,next){
-    let res1= await StudentsBL.getBeltsAverage(req.body.userId);
-    if(!res1){
+router.post('/getBeltsAverage', async function (req, res, next) {
+    let res1 = await StudentsBL.getBeltsAverage(req.body.userId);
+    if (!res1) {
         return res.json(false)
-    }else{
+    } else {
         return res.json([...res1])
     }
 })
 
-router.post('/deleteactivity',async function(req,res,next){
-    let resp= await StudentsBL.deleteActivity(req.body);
-    if(resp){
+router.post('/deleteactivity', async function (req, res, next) {
+    let resp = await StudentsBL.deleteActivity(req.body);
+    if (resp) {
         return res.json(true)
-    }else{
+    } else {
         return res.json(false)
     }
 })
 
-router.post('/getstudentactivities',async function(req,res,next){
-    let resp= await StudentsBL.getStudentActivities(req.body);
-    if(resp){
+router.post('/getstudentactivities', async function (req, res, next) {
+    let resp = await StudentsBL.getStudentActivities(req.body);
+    if (resp) {
         return res.json(resp)
-    }else{
+    } else {
         return res.json(false)
     }
 })

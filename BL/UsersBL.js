@@ -18,25 +18,6 @@ const validateUserForDbReset = async function (id, password) {
 
 }
 
-// const updateUser = async function (id, user) {
-//     return new Promise((resolve, reject) => {
-//         USERS_MODEL.findOneAndUpdate(id, {
-//             Email: user.email,
-//             Password: user.password
-
-//         }, function (err) {
-
-//             if (err) {
-//                 reject(err);
-//             } else {
-//                 resolve(true)
-//             }
-//         })
-
-//     })
-
-// }
-
 const deleteUser = async function (id) {
     return new Promise((resolve, reject) => {
         USERS_MODEL.findByIdAndDelete(id, function (err) {
@@ -172,7 +153,16 @@ const updateUserCredentials = async function (user) {
 }
 
 const forgotPassword = async function (user) {
-    console.log(user)
+    let users = await getAllUsers();
+    let matchUser = users.filter(dbUser =>
+        dbUser.Email == user.userEmail &&
+        dbUser.SecurityQuestion == user.securityQ &&
+        dbUser.SecurityAnswer == user.securityA)
+    if (matchUser.length > 0) {
+        return matchUser[0].Password
+    }else{
+        return false;
+    }
 }
 
 module.exports = { forgotPassword, updateUserCredentials, validateUserForDbReset, resetDb, getUserLoginDetails, getUserById, isUserExists, getAllUsers, addNewUser, deleteUser, getUserID, isUserNameAvailable }
