@@ -1,21 +1,21 @@
 const USERS_MODEL = require('../Models/UsersModel');
 
 //this func should get token as well
-const validateUserForDbReset= async function (id,password){
+const validateUserForDbReset = async function (id, password) {
     let user = await getUserById(id)
-    if(user.length>0){
+    if (user.length > 0) {
 
-        if(user[0].Password==password){
+        if (user[0].Password == password) {
             console.log(true)
             return true;
-        }else{
+        } else {
             console.log(false)
             return false;
         }
 
 
     }
-    
+
 }
 
 // const updateUser = async function (id, user) {
@@ -66,8 +66,8 @@ const addNewUser = async function (userData) {
         const user = new USERS_MODEL({
             Email: userData.inputEmail,
             Password: userData.inputPassword,
-            SecurityQuestion:userData.securityQ,
-            SecurityAnswer:userData.securityA,
+            SecurityQuestion: userData.securityQ,
+            SecurityAnswer: userData.securityA,
             CreatedDate: new Date().getDate() + '/' + (new Date().getMonth() + 1 + '/' + new Date().getFullYear()),
         })
         user.save(function (err, newUser) {
@@ -115,9 +115,9 @@ const isUserNameAvailable = async function (email) {
     return flag;
 };
 
-const getUserById = async function (userId){
+const getUserById = async function (userId) {
     return new Promise((resolve, reject) => {
-        USERS_MODEL.find({userId}, function (err, user) {
+        USERS_MODEL.find({ userId }, function (err, user) {
             if (err) {
                 reject(err);
             } else {
@@ -127,7 +127,7 @@ const getUserById = async function (userId){
     })
 }
 
-const getUserLoginDetails = async function (id){
+const getUserLoginDetails = async function (id) {
     let users = await getAllUsers();
     let user = users.filter(x => x._id.toString() == id.toString());
     if (user.length > 0) {
@@ -137,12 +137,12 @@ const getUserLoginDetails = async function (id){
     }
 }
 
-const resetDb = async function (){
-    return new Promise((resolve,reject)=>{
-        USERS_MODEL.deleteMany({},function(err){
-            if(err){
+const resetDb = async function () {
+    return new Promise((resolve, reject) => {
+        USERS_MODEL.deleteMany({}, function (err) {
+            if (err) {
                 reject(err)
-            }else{
+            } else {
                 resolve(true)
             }
         })
@@ -150,23 +150,29 @@ const resetDb = async function (){
     })
 }
 
-const updateUserCredentials = async function (user){
-    return new Promise((resolve,reject)=>{
-        USERS_MODEL.findOneAndUpdate(user.userId,{"$set":
-        {
-            Email:user.email,
-            Password:user.password,
-            SecurityQuestion:user.securityQuestion,
-            SecurityAnswer:user.securityAnswer
-        }},function(err,data){
-            if(err){
+const updateUserCredentials = async function (user) {
+    return new Promise((resolve, reject) => {
+        USERS_MODEL.findOneAndUpdate(user.userId, {
+            "$set":
+            {
+                Email: user.email,
+                Password: user.password,
+                SecurityQuestion: user.securityQuestion,
+                SecurityAnswer: user.securityAnswer
+            }
+        }, function (err, data) {
+            if (err) {
                 reject(false)
-            }else{
+            } else {
                 resolve(data)
             }
         })
     })
-    
-} 
 
-module.exports = {updateUserCredentials,validateUserForDbReset,resetDb,getUserLoginDetails,getUserById, isUserExists, getAllUsers, addNewUser, deleteUser, getUserID, isUserNameAvailable }
+}
+
+const forgotPassword = async function (user) {
+    console.log(user)
+}
+
+module.exports = { forgotPassword, updateUserCredentials, validateUserForDbReset, resetDb, getUserLoginDetails, getUserById, isUserExists, getAllUsers, addNewUser, deleteUser, getUserID, isUserNameAvailable }

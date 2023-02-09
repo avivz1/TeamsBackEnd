@@ -26,9 +26,11 @@ const getStudentAttendants = async function (userId, stuId) {
         })
     })
 
+
     let json = {
         presentPractices: was,
-        notPresentPractices: wasnt
+        notPresentPractices: wasnt,
+        activities:stu.Activities
     }
     return json;
 
