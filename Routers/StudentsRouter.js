@@ -77,7 +77,6 @@ router.post('/changestudentsteams', async function (req, res, next) {
 });
 
 router.post('/editstudent', async function (req, res, next) {
-    console.log(req.body.Team_ID)
     let response = await StudentsBL.updateStudentSoftDetails(req.body);
     if (response) {
         return res.json(true);

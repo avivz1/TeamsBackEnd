@@ -6,10 +6,8 @@ const validateUserForDbReset = async function (id, password) {
     if (user.length > 0) {
 
         if (user[0].Password == password) {
-            console.log(true)
             return true;
         } else {
-            console.log(false)
             return false;
         }
 
@@ -84,6 +82,19 @@ const isUserExists = async function (email, password) {
 
 };
 
+const isEmailAvailableToUpdate = async function (userId, email) {
+    let users = await getAllUsers();
+    let flag = true;
+
+    let usersWithOutCurrentUser = users.filter(u => u._id != userId)
+    usersWithOutCurrentUser.forEach(us => {
+        if (us.Email == email) {
+            flag = false;
+        }
+    })
+    return flag;
+}
+
 const isUserNameAvailable = async function (email) {
     let users = await getAllUsers();
     let flag = true;
@@ -132,24 +143,29 @@ const resetDb = async function () {
 }
 
 const updateUserCredentials = async function (user) {
-    return new Promise((resolve, reject) => {
-        USERS_MODEL.findOneAndUpdate(user.userId, {
-            "$set":
-            {
-                Email: user.email,
-                Password: user.password,
-                SecurityQuestion: user.securityQuestion,
-                SecurityAnswer: user.securityAnswer
-            }
-        }, function (err, data) {
-            if (err) {
-                reject(false)
-            } else {
-                resolve(data)
-            }
-        })
+    return new Promise(async (resolve, reject) => {
+        let status = await isEmailAvailableToUpdate(user.userId, user.Email)
+        console.log('status is ' + status)
+        if (status) {
+            USERS_MODEL.findOneAndUpdate(user.userId, {
+                "$set":
+                {
+                    Email: user.email,
+                    Password: user.password,
+                    SecurityQuestion: user.securityQuestion,
+                    SecurityAnswer: user.securityAnswer
+                }
+            }, function (err, data) {
+                if (err) {
+                    reject(false);
+                } else {
+                    resolve(data);
+                }
+            })
+        } else {
+            reject(false);
+        }
     })
-
 }
 
 const forgotPassword = async function (user) {
@@ -160,9 +176,9 @@ const forgotPassword = async function (user) {
         dbUser.SecurityAnswer == user.securityA)
     if (matchUser.length > 0) {
         return matchUser[0].Password
-    }else{
+    } else {
         return false;
     }
 }
 
-module.exports = { forgotPassword, updateUserCredentials, validateUserForDbReset, resetDb, getUserLoginDetails, getUserById, isUserExists, getAllUsers, addNewUser, deleteUser, getUserID, isUserNameAvailable }
+module.exports = { isEmailAvailableToUpdate, forgotPassword, updateUserCredentials, validateUserForDbReset, resetDb, getUserLoginDetails, getUserById, isUserExists, getAllUsers, addNewUser, deleteUser, getUserID, isUserNameAvailable }
