@@ -145,7 +145,6 @@ const resetDb = async function () {
 const updateUserCredentials = async function (user) {
     return new Promise(async (resolve, reject) => {
         let status = await isEmailAvailableToUpdate(user.userId, user.Email)
-        console.log('status is ' + status)
         if (status) {
             USERS_MODEL.findOneAndUpdate(user.userId, {
                 "$set":
