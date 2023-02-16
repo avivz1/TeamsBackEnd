@@ -25,7 +25,7 @@ router.post('/deletepractice', async function (req, res, next) {
 
 });
 
-router.post('/getstudentattendents', async function (req, res, next) {
+router.post('/getstudentattendants', async function (req, res, next) {
     let respo = await PracticeBL.getStudentAttendants(req.body.userId, req.body.stuId)
     if (respo != false) {
         return res.json(respo)

@@ -35,7 +35,7 @@ const getUserID = async function (email, password) {
     if (user.length > 0) {
         return user[0]._id;
     } else {
-        return "Error";
+        return false;
     }
 
 };
@@ -72,13 +72,23 @@ const getAllUsers = function () {
 };
 
 const isUserExists = async function (email, password) {
-    let users = await getAllUsers();
-    let user = users.filter(x => x.Password == password && x.Email == email);
-    if (user.length > 0) {
-        return user[0]._id;
-    } else {
-        return false;
-    }
+    return new Promise((resolve, reject) => {
+        USERS_MODEL.find({Password:password,Email:email}, function (err, user) {
+            if (err) {
+                reject(false);
+            } else {
+                resolve(user[0]._id);
+            }
+        })
+    })
+
+    // let users = await getAllUsers();
+    // let user = users.filter(x => x.Password == password && x.Email == email);
+    // if (user.length > 0) {
+    //     return user[0]._id;
+    // } else {
+    //     return false;
+    // }
 
 };
 
@@ -95,7 +105,7 @@ const isEmailAvailableToUpdate = async function (userId, email) {
     return flag;
 }
 
-const isUserNameAvailable = async function (email) {
+const isEmailAvailable = async function (email) {
     let users = await getAllUsers();
     let flag = true;
 
@@ -109,7 +119,7 @@ const isUserNameAvailable = async function (email) {
 
 const getUserById = async function (userId) {
     return new Promise((resolve, reject) => {
-        USERS_MODEL.find({ userId }, function (err, user) {
+        USERS_MODEL.findById(userId , function (err, user) {
             if (err) {
                 reject(err);
             } else {
@@ -120,26 +130,12 @@ const getUserById = async function (userId) {
 }
 
 const getUserLoginDetails = async function (id) {
-    let users = await getAllUsers();
-    let user = users.filter(x => x._id.toString() == id.toString());
-    if (user.length > 0) {
-        return user[0];
+    let user = await getUserById(id);
+    if (user) {
+        return user;
     } else {
         return false;
     }
-}
-
-const resetDb = async function () {
-    return new Promise((resolve, reject) => {
-        USERS_MODEL.deleteMany({}, function (err) {
-            if (err) {
-                reject(err)
-            } else {
-                resolve(true)
-            }
-        })
-
-    })
 }
 
 const updateUserCredentials = async function (user) {
@@ -168,16 +164,17 @@ const updateUserCredentials = async function (user) {
 }
 
 const forgotPassword = async function (user) {
-    let users = await getAllUsers();
-    let matchUser = users.filter(dbUser =>
-        dbUser.Email == user.userEmail &&
-        dbUser.SecurityQuestion == user.securityQ &&
-        dbUser.SecurityAnswer == user.securityA)
-    if (matchUser.length > 0) {
-        return matchUser[0].Password
-    } else {
-        return false;
-    }
+    return new Promise((resolve, reject) => {
+        USERS_MODEL.find({Email:user.userEmail,SecurityQuestion:user.securityQ,SecurityAnswer:user.securityA }, function (err, user) {
+            if (err) {
+                reject(false);
+            } else {
+                console.log(user)
+                resolve(user[0].Password);
+            }
+        })
+    })
+
 }
 
-module.exports = { isEmailAvailableToUpdate, forgotPassword, updateUserCredentials, validateUserForDbReset, resetDb, getUserLoginDetails, getUserById, isUserExists, getAllUsers, addNewUser, deleteUser, getUserID, isUserNameAvailable }
+module.exports = { isEmailAvailableToUpdate, forgotPassword, updateUserCredentials, validateUserForDbReset, getUserLoginDetails, getUserById, isUserExists, getAllUsers, addNewUser, deleteUser, getUserID, isEmailAvailable }

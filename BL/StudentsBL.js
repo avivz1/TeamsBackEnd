@@ -40,12 +40,12 @@ const deleteStudentById = function (id) {
 
 const getAllStudentsByUserID = function (userid) {
     return new Promise((resolve, reject) => {
-        STUDENTS_MODEL.find({}, function (err, students) {
+        STUDENTS_MODEL.find({User_ID:userid}, function (err, students) {
             if (err) {
                 reject(false);
             } else {
-                let stuArr = students.filter(s => s.User_ID == userid);
-                resolve(stuArr);
+                // let stuArr = students.filter(s => s.User_ID == userid);
+                resolve(students);
             }
         })
     })
@@ -102,6 +102,18 @@ const updateStudentPractice = function (practices, stu_id) {
                     resolve(true);
                 }
             })
+    })
+}
+
+const getStudentByUserAndStudentId = function (userId,stuId) {
+    return new Promise((resolve, reject) => {
+        STUDENTS_MODEL.find({User_ID:userId,_id:stuId}, function (err, stu) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(stu);
+            }
+        })
     })
 }
 
@@ -186,7 +198,7 @@ const addPracticeToSingleStudent = async function (stu_id, practice_id) {
 }
 
 const addPracticeToStudents = async function (pra_id, students) {
-    studentsArr = []
+    let studentsArr = []
     if (students.length > 0) {
         students.forEach(stu_id => {
             studentsArr.push(addPracticeToSingleStudent(stu_id, pra_id))
@@ -254,7 +266,6 @@ const deleteFewStudentsByTeam = async function (teams, userId) {
             return s._id;
         }
     })
-    // let studentsToDelete = stude.map(st => st._id)
     return deleteFewStudents(stude);
 
 }
@@ -293,9 +304,9 @@ const getBeltsAverage = async function (userId) {
     return map;
 }
 
-const resetDb = async function () {
+const resetDb = async function (userId) {
     return new Promise((resolve, reject) => {
-        STUDENTS_MODEL.deleteMany({}, function (err) {
+        STUDENTS_MODEL.deleteMany({User_ID:userId}, function (err) {
             if (err) {
                 reject(err)
             } else {
@@ -331,8 +342,12 @@ const deleteActivity = async function (data) {
 }
 
 const getStudentActivities = async function (data) {
-    let student = await getStudent(data.stuId);
-    return student.Activities;
+    let student = await getStudentByUserAndStudentId(data.userId,data.stuId);
+    if(student.length>0){
+        return student[0].Activities;
+    }else{
+        return [];
+    }
 }
 
-module.exports = { getStudentActivities, deleteActivity, addNewActivity, resetDb, getBeltsAverage, getFewStudents, deleteFewStudentsByTeam, addOrUpdateStudentPhoto, getFewStudentsByPractice, updateStudentPractice, deletePracticeId, deletePracticeFromStudents, addPracticeToSingleStudent, addPracticeToStudents, changeStudentsTeam, deleteFewStudents, getStudentsByTeamId, addNewStudent, deleteStudentById, getAllStudentsByUserID, updateStudentTeamID, updateStudentSoftDetails, getStudent }
+module.exports = {getStudentByUserAndStudentId, getStudentActivities, deleteActivity, addNewActivity, resetDb, getBeltsAverage, getFewStudents, deleteFewStudentsByTeam, addOrUpdateStudentPhoto, getFewStudentsByPractice, updateStudentPractice, deletePracticeId, deletePracticeFromStudents, addPracticeToSingleStudent, addPracticeToStudents, changeStudentsTeam, deleteFewStudents, getStudentsByTeamId, addNewStudent, deleteStudentById, getAllStudentsByUserID, updateStudentTeamID, updateStudentSoftDetails, getStudent }

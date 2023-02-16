@@ -85,7 +85,7 @@ router.post('/adddata', async function (req, res, next) {
 });
 
 router.post('/signup', async function (req, res, next) {
-    let isUserAvailable = await usersBL.isUserNameAvailable(req.body.inputEmail);
+    let isUserAvailable = await usersBL.isEmailAvailable(req.body.inputEmail);
     if (!isUserAvailable) {
         return res.json(false);
     } else {
@@ -109,22 +109,7 @@ router.post('/backupdb', async function (req, res, next) {
 
 });
 
-router.post('/resetdb', async function (req, res, next) {
-    let valid = await usersBL.validateUserForDbReset(req.body.userId,req.body.password)
-    if (valid) {
-        let stuStatus = await StudentsBL.resetDb();
-        let pracStatus = await PracticeBL.resetDb();
-        let teamStatus = await TeamsBL.resetDb();
-        if (stuStatus && pracStatus && teamStatus) {
-            return res.json(true)
-        } else {
-            return res.json(false)
-        }
-    } else {
-        return res.json(false)
-    }
 
-});
 
 
 

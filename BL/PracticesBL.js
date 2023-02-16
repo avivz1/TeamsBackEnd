@@ -4,19 +4,17 @@ var StudentsBL = require('../BL/StudentsBL');
 var UserBL = require('../BL/UsersBL');
 
 const getStudentAttendants = async function (userId, stuId) {
-    // let promises = []
-    let arr = [];
-    let stu = await StudentsBL.getStudent(stuId)
-    //full object
+    // let stu = await StudentsBL.getStudent(stuId)getStudentByUserAndStudentId
+    let stuArr = await StudentsBL.getStudentByUserAndStudentId(userId,stuId)
+    let stu = stuArr[0]
     let allPractices = await getAllPractices(userId)
-    //id array
     let stuPractices = stu.Practices;
-
+    
     let was = []
     let wasnt = []
     allPractices.filter(p => {
-        p.Students.forEach(stu => {
-            if (stu.Student_ID == stuId) {
+        p.Students.forEach(student => {
+            if (student.Student_ID == stuId) {
                 if (stuPractices.includes(p._id)) {
                     was.push(p)
                 } else {
@@ -48,14 +46,14 @@ const getPractice = function (id) {
     })
 }
 
-const getAllPractices = function (userid) {
+const getAllPractices = function (userId) {
     return new Promise((resolve, reject) => {
-        PRACTICES_MODEL.find({}, function (err, practices) {
+        PRACTICES_MODEL.find({User_ID:userId}, function (err, practices) {
             if (err) {
                 reject(false);
             } else {
-                let practicesArr = practices.filter(p => p.User_ID == userid);
-                resolve(practicesArr);
+                // let practicesArr = practices.filter(p => p.User_ID == userid);
+                resolve(practices);
             }
         })
     })
@@ -123,12 +121,9 @@ const updatePractice = function (practice) {
     })
 }
 
-
 //4
-//call 1 time (the number of total practices) *4 (the number of total students)
 const updatePracticeStudent = function (p_id, stu) {
     return new Promise((resolve, reject) => {
-
         PRACTICES_MODEL.updateOne({ _id: p_id, 'Students.Student_ID': stu.Student_ID }, { $set: { 'Students.$.Name': stu.Name } }, function (err, doc) {
             if (err) {
                 // Handle the error
@@ -144,7 +139,6 @@ const updatePracticeStudent = function (p_id, stu) {
 
 }
 //3
-//call 1 time (the number of total practices) * 4 (the number of total students)
 const getPracticeAndDeleteStudent = async function (practice, stuId, stu_name) {
     practice.Students.forEach((st) => {
         if (stuId.toString() == st.Student_ID.toString()) {
@@ -153,6 +147,41 @@ const getPracticeAndDeleteStudent = async function (practice, stuId, stu_name) {
         }
     })
     // return updatePracticeStudents(practice._id, practice.Students)
+}
+//2
+const deleteStudentFromPractice = async function (stu_name, stuId, userid) {
+    let practices = []
+    let practicesFromDB = await getAllPractices(userid);
+    practicesFromDB.forEach((pra) => {
+        practices.push(getPracticeAndDeleteStudent(pra, stuId, stu_name))
+    })
+
+    const allPromises = Promise.all(practices);
+    const list = await allPromises;
+
+    if (list.includes(undefined || false)) {
+        return false;
+    } else {
+        return true;
+    }
+
+}
+//1
+const deleteFewStudentsFromPractices = async function (students, userId) {
+    let deletePractices = []
+    students.forEach((stu) => {
+        deletePractices.push(deleteStudentFromPractice(stu.Name, stu._id, userId))
+    })
+    const allPromises = Promise.all(deletePractices);
+    const list = await allPromises;
+
+    if (list.includes(undefined || false)) {
+        return false;
+    } else {
+
+        return true;
+    }
+
 }
 
 const updatePracticeTeam = function (p_id, team) {
@@ -194,43 +223,6 @@ const deleteTeamFromPractice = async function (team, userid) {
     }
 
 
-
-}
-//2
-//call 4 times ( the numbers of total students)
-const deleteStudentFromPractice = async function (stu_name, stuId, userid) {
-    let practices = []
-    let practicesFromDB = await getAllPractices(userid);
-    practicesFromDB.forEach((pra) => {
-        practices.push(getPracticeAndDeleteStudent(pra, stuId, stu_name))
-    })
-
-    const allPromises = Promise.all(practices);
-    const list = await allPromises;
-
-    if (list.includes(undefined || false)) {
-        return false;
-    } else {
-        return true;
-    }
-
-}
-//dont have to get the userid, need to change to DelteMany in mongoose
-//1
-const deleteFewStudentsFromPractices = async function (students, userId) {
-    let deletePractices = []
-    students.forEach((stu) => {
-        deletePractices.push(deleteStudentFromPractice(stu.Name, stu._id, userId))
-    })
-    const allPromises = Promise.all(deletePractices);
-    const list = await allPromises;
-
-    if (list.includes(undefined || false)) {
-        return false;
-    } else {
-
-        return true;
-    }
 
 }
 
@@ -420,9 +412,9 @@ const deleteFewPractices = async function (practices) {
     })
 }
 
-const resetDb = async function () {
+const resetDb = async function (userId) {
     return new Promise((resolve, reject) => {
-        PRACTICES_MODEL.deleteMany({}, function (err) {
+        PRACTICES_MODEL.deleteMany({User_ID:userId}, function (err) {
             if (err) {
                 reject(err)
             } else {

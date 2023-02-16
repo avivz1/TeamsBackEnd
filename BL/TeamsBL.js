@@ -4,12 +4,12 @@ var StudentsBL = require('../BL/StudentsBL');
 
 const getAllTeamsByUserId = function (userId) {
     return new Promise((resolve, reject) => {
-        TEAMS_MODEL.find({}, function (err, teams) {
+        TEAMS_MODEL.find({ User_ID: userId }, function (err, teams) {
             if (err) {
                 reject(false);
             } else {
-                let arr = teams.filter(x => x.User_ID == userId);
-                resolve(arr);
+                // let arr = teams.filter(x => x.User_ID == userId);
+                resolve(teams);
             }
         })
     })
@@ -133,12 +133,12 @@ const addOrUpdateTeamPhoto = async function (photo, teamId) {
 
 }
 
-const resetDb = async function (){
-    return new Promise((resolve,reject)=>{
-        TEAMS_MODEL.deleteMany({},function(err){
-            if(err){
+const resetDb = async function (userId) {
+    return new Promise((resolve, reject) => {
+        TEAMS_MODEL.deleteMany({ User_ID: userId }, function (err) {
+            if (err) {
                 reject(err)
-            }else{
+            } else {
                 resolve(true)
             }
         })
@@ -146,4 +146,4 @@ const resetDb = async function (){
     })
 }
 
-module.exports = {resetDb, addOrUpdateTeamPhoto, deleteFewTeams, getStudentsDistributionByTeam, addTeam, updateTeam, deleteTeam, getTeam, getAllTeamsByUserId }
+module.exports = { resetDb, addOrUpdateTeamPhoto, deleteFewTeams, getStudentsDistributionByTeam, addTeam, updateTeam, deleteTeam, getTeam, getAllTeamsByUserId }
