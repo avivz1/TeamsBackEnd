@@ -281,9 +281,16 @@ const getBeltsAverage = async function (userId) {
     map.set('brown', 0)
     map.set('black', 0)
     let students = await getAllStudentsByUserID(userId);
-    students.forEach(stu => {
-        map.set(stu.Belt, ((((map.get(stu.Belt) + 1)) / students.length) * 100).toFixed(2))
-    });
+    if (students.length > 0) {
+        const totalStus = students.length
+        students.forEach(stu => {
+            map.set(stu.Belt, map.get(stu.Belt) + 1)
+            // map.set(stu.Belt, ((((map.get(stu.Belt) + 1)) / students.length) * 100).toFixed(2))
+        });
+        for (const [key, value] of map) {
+            map.set(key,((value/totalStus)*100).toFixed(2))
+          }
+    }
     return map;
 }
 
@@ -314,7 +321,7 @@ const addNewActivity = async function (data) {
 
 const deleteActivity = async function (data) {
     return new Promise((resolve, reject) => {
-        STUDENTS_MODEL.updateOne({_id:data.stuId}, { "$pull": { "Activities": { _id: data.activity._id } } }, function (err, data) {
+        STUDENTS_MODEL.updateOne({ _id: data.stuId }, { "$pull": { "Activities": { _id: data.activity._id } } }, function (err, data) {
             if (err) {
                 reject(false)
             } else {
@@ -324,9 +331,9 @@ const deleteActivity = async function (data) {
     })
 }
 
-const getStudentActivities = async function (data){
+const getStudentActivities = async function (data) {
     let student = await getStudent(data.stuId);
     return student.Activities;
 }
 
-module.exports = {getStudentActivities, deleteActivity, addNewActivity, resetDb, getBeltsAverage, getFewStudents, deleteFewStudentsByTeam, addOrUpdateStudentPhoto, getFewStudentsByPractice, updateStudentPractice, deletePracticeId, deletePracticeFromStudents, addPracticeToSingleStudent, addPracticeToStudents, changeStudentsTeam, deleteFewStudents, getStudentsByTeamId, addNewStudent, deleteStudentById, getAllStudentsByUserID, updateStudentTeamID, updateStudentSoftDetails, getStudent }
+module.exports = { getStudentActivities, deleteActivity, addNewActivity, resetDb, getBeltsAverage, getFewStudents, deleteFewStudentsByTeam, addOrUpdateStudentPhoto, getFewStudentsByPractice, updateStudentPractice, deletePracticeId, deletePracticeFromStudents, addPracticeToSingleStudent, addPracticeToStudents, changeStudentsTeam, deleteFewStudents, getStudentsByTeamId, addNewStudent, deleteStudentById, getAllStudentsByUserID, updateStudentTeamID, updateStudentSoftDetails, getStudent }
