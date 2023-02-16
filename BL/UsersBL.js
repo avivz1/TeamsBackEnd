@@ -169,8 +169,11 @@ const forgotPassword = async function (user) {
             if (err) {
                 reject(false);
             } else {
-                console.log(user)
-                resolve(user[0].Password);
+                if(user.length>0){
+                    resolve(user[0].Password);
+                }else{
+                    resolve(false)
+                }
             }
         })
     })
