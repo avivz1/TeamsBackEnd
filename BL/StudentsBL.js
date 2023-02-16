@@ -285,7 +285,6 @@ const getBeltsAverage = async function (userId) {
         const totalStus = students.length
         students.forEach(stu => {
             map.set(stu.Belt, map.get(stu.Belt) + 1)
-            // map.set(stu.Belt, ((((map.get(stu.Belt) + 1)) / students.length) * 100).toFixed(2))
         });
         for (const [key, value] of map) {
             map.set(key,((value/totalStus)*100).toFixed(2))
