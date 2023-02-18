@@ -3,9 +3,8 @@ const USERS_MODEL = require('../Models/UsersModel');
 //this func should get token as well
 const validateUserForDbReset = async function (id, password) {
     let user = await getUserById(id)
-    if (user.length > 0) {
-
-        if (user[0].Password == password) {
+    if (user) {
+        if (user.Password == password) {
             return true;
         } else {
             return false;
@@ -77,7 +76,11 @@ const isUserExists = async function (email, password) {
             if (err) {
                 reject(false);
             } else {
-                resolve(user[0]._id);
+                if(user.length>0){
+                    resolve(user[0]._id);
+                }else{
+                    resolve(false)
+                }
             }
         })
     })

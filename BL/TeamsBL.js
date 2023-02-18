@@ -146,4 +146,36 @@ const resetDb = async function (userId) {
     })
 }
 
-module.exports = { resetDb, addOrUpdateTeamPhoto, deleteFewTeams, getStudentsDistributionByTeam, addTeam, updateTeam, deleteTeam, getTeam, getAllTeamsByUserId }
+const isTeamNameAvailable = async function (name) {
+    return new Promise((resolve, reject) => {
+        TEAMS_MODEL.find({ Name: name }, function (err, item) {
+            if (err) {
+                reject(false)
+            } else {
+                if (item.length > 0) {
+                    resolve(false)
+                } else {
+                    resolve(true)
+                }
+            }
+        })
+    })
+}
+const isNameMatchToDBTeamName = async function (teamId, teamName) {
+    return new Promise((resolve, reject) => {
+        TEAMS_MODEL.find({ Name: teamName, _id: teamId }, function (err, item) {
+            if (err) {
+                reject(false)
+            } else {
+                if (item.length > 0) {
+                    resolve(true)
+                } else {
+                    resolve(false)
+                }
+            }
+        })
+    })
+}
+
+
+module.exports = { isNameMatchToDBTeamName, isTeamNameAvailable, resetDb, addOrUpdateTeamPhoto, deleteFewTeams, getStudentsDistributionByTeam, addTeam, updateTeam, deleteTeam, getTeam, getAllTeamsByUserId }

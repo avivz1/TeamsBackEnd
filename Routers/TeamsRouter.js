@@ -8,27 +8,46 @@ var StudentsBL = require('../BL/StudentsBL')
 
 //return true
 router.post('/editteam', async function (req, response, next) {
-    let res = await TeamsBL.updateTeam(req.body);
-    if (res) {
-        return response.json(true)
+    let nameForEditStatus = await TeamsBL.isNameMatchToDBTeamName(req.body._id, req.body.name)
+    if (nameForEditStatus) {
+        let res = await TeamsBL.updateTeam(req.body);
+        if (res) {
+            return response.json(true)
+        } else {
+            return response.json(false)
+        }
+    } else {
+        let nameForAddStatus = await TeamsBL.isTeamNameAvailable(req.body.name);
+        if (nameForAddStatus) {
+            let res = await TeamsBL.updateTeam(req.body);
+            if (res) {
+                return response.json(true)
+            } else {
+                return response.json(false)
+            }
+        } else {
+            return response.json(false)
+        }
+    }
+
+})
+
+router.post('/addteam', async function (req, response, next) {
+    let nameStatus = await TeamsBL.isTeamNameAvailable(req.body.name)
+    if (nameStatus) {
+        let res = await TeamsBL.addTeam(req.body);
+        if (res) {
+            return response.json(true);
+        } else {
+            return response.json(false);
+        }
     } else {
         return response.json(false)
-    }
-})
-//return teamID
-router.post('/addteam', async function (req, response, next) {
-
-    let res = await TeamsBL.addTeam(req.body);
-    if (res) {
-        return response.json(true);
-    } else {
-        return response.json(false);
     }
 
 })
 //return all teams
 router.post('/getalluserteams', async function (req, response, next) {
-
     let res = await TeamsBL.getAllTeamsByUserId(req.body.userID);
     if (res) {
         return response.json(res);
@@ -38,7 +57,6 @@ router.post('/getalluserteams', async function (req, response, next) {
 })
 //return team
 router.post('/getteam', async function (req, response, next) {
-
     let res = await TeamsBL.getTeam(req.body.teamId);
     if (res) {
         return response.json(res);
@@ -68,6 +86,7 @@ router.post('/getdistributionbyTeam', async function (req, response, next) {
 
 })
 
+
 router.post('/removeFewTeams', async function (req, response, next) {
     let res = await TeamsBL.deleteFewTeams(req.body.teams);
     if (res != false) {
@@ -85,7 +104,7 @@ router.post('/removeFewTeams', async function (req, response, next) {
 })
 
 router.post('/addorupdateteamphoto', async function (req, res, next) {
-    let res1 = await TeamsBL.addOrUpdateTeamPhoto(req.body.photo,req.body.teamID);
+    let res1 = await TeamsBL.addOrUpdateTeamPhoto(req.body.photo, req.body.teamID);
     if (!res1) {
         return res.json(false)
     } else {
