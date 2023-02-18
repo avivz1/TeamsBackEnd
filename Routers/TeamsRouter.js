@@ -67,11 +67,20 @@ router.post('/getteam', async function (req, response, next) {
 
 router.post('/deleteteam', async function (req, response, next) {
     let team = await TeamsBL.getTeam(req.body.teamId)
-    let deleteRes = await PracticeBL.deleteTeamFromPractice(team, req.body.userId)
-    let res = await TeamsBL.deleteTeam(req.body.teamId);
-    if (res) {
-        return response.json(res);
-    } else {
+    if(team){
+
+        let deleteRes = await PracticeBL.deleteTeamFromPractice(team, req.body.userId)
+        if(deleteRes){
+            let res = await TeamsBL.deleteTeam(req.body.teamId);
+            if (res) {
+                return response.json(res);
+            } else {
+                return response.json(false)
+            }
+        }else{
+            return response.json(false)
+        }
+    }else{
         return response.json(false)
     }
 })
@@ -85,7 +94,6 @@ router.post('/getdistributionbyTeam', async function (req, response, next) {
     }
 
 })
-
 
 router.post('/removeFewTeams', async function (req, response, next) {
     let res = await TeamsBL.deleteFewTeams(req.body.teams);
