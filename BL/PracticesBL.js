@@ -120,7 +120,6 @@ const updatePractice = function (practice) {
             })
     })
 }
-
 //4
 const updatePracticeStudent = function (p_id, stu) {
     return new Promise((resolve, reject) => {
@@ -197,6 +196,18 @@ const updatePracticeTeam = function (p_id, team) {
                     resolve(true)
                 }
             })
+    })
+}
+
+const updateTeamNameByTeamId = function (team){
+    return new Promise((resolve,reject)=>{
+        PRACTICES_MODEL.findOneAndUpdate({'Team.Team_ID':team._id},{'Team.Name':team.name},{new:true},function(err,doc){
+            if(err){
+                reject(err)
+            }else{
+                resolve(doc)
+            }
+        })
     })
 }
 
@@ -426,4 +437,4 @@ const resetDb = async function (userId) {
 }
 
 
-module.exports = { resetDb, deleteFewPractices, getTotalDivisionByMonth, getTotalDivision, getStudentAttendants, getPracticeAttendancePrecent, addOrRemovePracticeFromStudent, isStudentWasInPractice, getStudentsList, deleteFewStudentsFromPractices, updatePracticeTeam, deleteTeamFromPractice, updatePracticeStudent, deleteStudentFromPractice, updatePractice, deletePractice, getPractice, getAllPractices, addPractice }
+module.exports = {updateTeamNameByTeamId, resetDb, deleteFewPractices, getTotalDivisionByMonth, getTotalDivision, getStudentAttendants, getPracticeAttendancePrecent, addOrRemovePracticeFromStudent, isStudentWasInPractice, getStudentsList, deleteFewStudentsFromPractices, updatePracticeTeam, deleteTeamFromPractice, updatePracticeStudent, deleteStudentFromPractice, updatePractice, deletePractice, getPractice, getAllPractices, addPractice }

@@ -161,6 +161,7 @@ const isTeamNameAvailable = async function (name) {
         })
     })
 }
+
 const isNameMatchToDBTeamName = async function (teamId, teamName) {
     return new Promise((resolve, reject) => {
         TEAMS_MODEL.find({ Name: teamName, _id: teamId }, function (err, item) {
