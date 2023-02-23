@@ -7,18 +7,105 @@ var TeamsBL = require('../BL/TeamsBL');
 
 
 router.post('/getuserdetails', async function (req, res, next) {
-    let userDetails = await usersBL.getUserLoginDetails(req.body.userId);
-    if (userDetails) {
-        // res.status(200).send('hi')
-        return res.json(userDetails)
-    } else {
-        return res.json(false)
+    try {
+        let userDetails = await usersBL.getUserById(req.body.userId);
+        if (userDetails) {
+            res.status(200).json({
+                success: true,
+                message: 'Success',
+                data: userDetails
+            });
+        } else {
+            res.status(404).json({
+                success: false,
+                message: 'User not found',
+                data: {}
+            });
+        }
+
+    } catch (e) {
+        res.status(500).json({
+            success: false,
+            message: 'Internal server error',
+            data: {}
+        });
+    }
+})
+
+router.post('/', async function (req, res, next) {
+    try {
+        let userDetails = await usersBL.isUserExists(req.body.inputEmail, req.body.inputPassword);
+        if (userDetails) {
+             res.status(200).json({
+                success: true,
+                message: 'Success',
+                data: userDetails
+            });
+        } else {
+             res.status(404).json({
+                success: false,
+                message: 'User not found',
+                data: {}
+            });
+        }
+
+    } catch (e) {
+         res.status(500).json({
+            success: false,
+            message: 'Internal server error',
+            data: {}
+        });
+        
     }
 
 });
-router.post('/', async function (req, res, next) {
-    let isExistsResponse = await usersBL.isUserExists(req.body.inputEmail, req.body.inputPassword);
-    return res.json(isExistsResponse);
+
+
+
+router.post('/signup', async function (req, res, next) {
+    try{
+        let isUserAvailable = await usersBL.isEmailAvailable(req.body.inputEmail);
+        console.log(isUserAvailable)
+        if(!isUserAvailable==true){
+
+            res.status(200).json({
+                success: true,
+                message: 'Email is not available',
+                data: {}
+            });
+        }else{
+            res.status(200).json({
+                success: true,
+                message: 'Email is available',
+                data: {}
+            });
+        }
+
+    }catch(e){
+
+    }
+
+    // let isUserAvailable = await usersBL.isEmailAvailable(req.body.inputEmail);
+    // if (!isUserAvailable) {
+    //     return res.json(false);
+    // } else {
+    //     let newUserID = await usersBL.addNewUser(req.body);
+    //     if (newUserID) {
+    //         return res.json(newUserID);
+    //     } else {
+    //         return res.json(false)
+    //     }
+    // }
+
+});
+
+router.post('/backupdb', async function (req, res, next) {
+    let practices = await PracticeBL.getAllPractices(req.body.userId);
+    let teams = await TeamsBL.getAllTeamsByUserId(req.body.userId);
+    let students = await StudentsBL.getAllStudentsByUserID(req.body.userId);
+
+    return res.json([practices, teams, students]);
+
 
 });
 
@@ -83,34 +170,6 @@ router.post('/adddata', async function (req, res, next) {
     return res.json('OK')
 
 });
-
-router.post('/signup', async function (req, res, next) {
-    let isUserAvailable = await usersBL.isEmailAvailable(req.body.inputEmail);
-    if (!isUserAvailable) {
-        return res.json(false);
-    } else {
-        let newUserID = await usersBL.addNewUser(req.body);
-        if (newUserID) {
-            return res.json(newUserID);
-        } else {
-            return res.json(false)
-        }
-    }
-
-});
-
-router.post('/backupdb', async function (req, res, next) {
-    let practices = await PracticeBL.getAllPractices(req.body.userId);
-    let teams = await TeamsBL.getAllTeamsByUserId(req.body.userId);
-    let students = await StudentsBL.getAllStudentsByUserID(req.body.userId);
-
-    return res.json([practices, teams, students]);
-
-
-});
-
-
-
 
 
 module.exports = router;

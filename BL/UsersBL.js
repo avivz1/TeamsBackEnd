@@ -72,26 +72,19 @@ const getAllUsers = function () {
 
 const isUserExists = async function (email, password) {
     return new Promise((resolve, reject) => {
-        USERS_MODEL.find({Password:password,Email:email}, function (err, user) {
+        USERS_MODEL.find({ Password: password, Email: email }, function (err, user) {
             if (err) {
-                reject(false);
+                reject(err);
             } else {
-                if(user.length>0){
+                if (user.length > 0) {
                     resolve(user[0]._id);
-                }else{
+                } else {
                     resolve(false)
                 }
             }
         })
     })
 
-    // let users = await getAllUsers();
-    // let user = users.filter(x => x.Password == password && x.Email == email);
-    // if (user.length > 0) {
-    //     return user[0]._id;
-    // } else {
-    //     return false;
-    // }
 
 };
 
@@ -109,20 +102,27 @@ const isEmailAvailableToUpdate = async function (userId, email) {
 }
 
 const isEmailAvailable = async function (email) {
-    let users = await getAllUsers();
     let flag = true;
-
-    users.forEach(user => {
-        if (user.Email == email) {
-            flag = false;
+    try {
+        let users = await getAllUsers();
+        if (users.length > 0) {
+            users.forEach(user => {
+                if (user.Email == email) {
+                    flag = false
+                }
+            })
         }
-    })
-    return flag;
+        return flag;
+
+    } catch (e) {
+        return e;
+    }
+
 };
 
 const getUserById = async function (userId) {
     return new Promise((resolve, reject) => {
-        USERS_MODEL.findById(userId , function (err, user) {
+        USERS_MODEL.findById(userId, function (err, user) {
             if (err) {
                 reject(err);
             } else {
@@ -168,13 +168,13 @@ const updateUserCredentials = async function (user) {
 
 const forgotPassword = async function (user) {
     return new Promise((resolve, reject) => {
-        USERS_MODEL.find({Email:user.userEmail,SecurityQuestion:user.securityQ,SecurityAnswer:user.securityA }, function (err, user) {
+        USERS_MODEL.find({ Email: user.userEmail, SecurityQuestion: user.securityQ, SecurityAnswer: user.securityA }, function (err, user) {
             if (err) {
                 reject(false);
             } else {
-                if(user.length>0){
+                if (user.length > 0) {
                     resolve(user[0].Password);
-                }else{
+                } else {
                     resolve(false)
                 }
             }

@@ -401,7 +401,7 @@ const getTotalDivisionByMonth = async function (userId) {
                     arr[i] = (arr[i] + obj.result)
 
                 })
-                arr[i] = (arr[i] / monthArr.length).toFixed(2)
+                arr[i] = (arr[i] / monthArr.length).toFixed(0)+'%'
             }
 
         }
