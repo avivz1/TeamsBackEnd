@@ -79,8 +79,15 @@ const getTeam = function (id) {
 }
 
 const getStudentsDistributionByTeam = async function (userId) {
-    let allTeams = await getAllTeamsByUserId(userId);
-    let allStudents = await StudentsBL.getAllStudentsByUserID(userId);
+    let allTeams;
+    let allStudents;
+    try{
+        allTeams = await getAllTeamsByUserId(userId);
+        allStudents = await StudentsBL.getAllStudentsByUserID(userId);
+
+    }catch(e){
+        return false;
+    }
 
     let finishedArr = allTeams.map(team => {
         let obj = {

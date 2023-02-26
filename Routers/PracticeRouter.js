@@ -101,6 +101,7 @@ router.post('/getstudentlistforpratice', async function (req, res, next) {
 });
 
 router.post('/getTotalDivision', async function (req, res, next) {
+    console.log(req.user)
     let resp = await PracticeBL.getTotalDivision(req.body.userId);
     if (resp != undefined || resp != null) {
         return res.json(resp)

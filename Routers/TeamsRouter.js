@@ -86,7 +86,13 @@ router.post('/deleteteam', async function (req, response, next) {
 })
 
 router.post('/getdistributionbyTeam', async function (req, response, next) {
-    let res = await TeamsBL.getStudentsDistributionByTeam(req.body.userId);
+    let res;
+    try{
+         res = await TeamsBL.getStudentsDistributionByTeam(req.user.id);
+    }catch(e){
+        response.json(false);
+
+    }
     if (res != false) {
         response.json(res);
     } else {

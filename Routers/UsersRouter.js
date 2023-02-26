@@ -48,4 +48,29 @@ router.post('/forgotpassword', async function (req, res, next) {
 
 })
 
+router.post('/backupdb', async function (req, res, next) {
+  try {
+      let practices = await PracticeBL.getAllPractices(req.user.id);
+      let teams = await TeamsBL.getAllTeamsByUserId(req.user.id);
+      let students = await StudentsBL.getAllStudentsByUserID(req.user.id);
+      if (practices && teams && students) {
+          res.status(200).json({
+              success: true,
+              message: 'Success',
+              data: [practices, teams, students]
+          });
+      }
+  } catch (e) {
+      res.status(500).json({
+          success: false,
+          message: 'Internal server error',
+          data: null
+      });
+  }
+
+
+
+
+});
+
 module.exports = router;
