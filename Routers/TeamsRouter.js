@@ -67,36 +67,49 @@ router.post('/getteam', async function (req, response, next) {
 
 router.post('/deleteteam', async function (req, response, next) {
     let team = await TeamsBL.getTeam(req.body.teamId)
-    if(team){
+    if (team) {
 
         let deleteRes = await PracticeBL.deleteTeamFromPractice(team, req.body.userId)
-        if(deleteRes){
+        if (deleteRes) {
             let res = await TeamsBL.deleteTeam(req.body.teamId);
             if (res) {
                 return response.json(res);
             } else {
                 return response.json(false)
             }
-        }else{
+        } else {
             return response.json(false)
         }
-    }else{
+    } else {
         return response.json(false)
     }
 })
 
 router.post('/getdistributionbyTeam', async function (req, response, next) {
     let res;
-    try{
-         res = await TeamsBL.getStudentsDistributionByTeam(req.user.id);
-    }catch(e){
-        response.json(false);
-
+    try {
+        res = await TeamsBL.getStudentsDistributionByTeam(req.user.id);
+    } catch (e) {
+        response.status(500).json({
+            success: false,
+            message: 'Internal Server Error',
+            data: null
+        })
+        // response.json(false);
     }
-    if (res != false) {
-        response.json(res);
+    if (res == false) {
+        response.status(500).json({
+            success: false,
+            message: 'Internal Server Error',
+            data: null
+        });
     } else {
-        response.json(false);
+        response.status(200).json({
+            success: true,
+            message: 'Success',
+            data: res
+        });
+
     }
 
 })

@@ -40,7 +40,7 @@ const deleteStudentById = function (id) {
 
 const getAllStudentsByUserID = function (userid) {
     return new Promise((resolve, reject) => {
-        STUDENTS_MODEL.find({User_ID:userid}, function (err, students) {
+        STUDENTS_MODEL.find({ User_ID: userid }, function (err, students) {
             if (err) {
                 reject(false);
             } else {
@@ -97,7 +97,7 @@ const updateStudentPractice = function (practices, stu_id) {
             }
             , function (err) {
                 if (err) {
-                    reject(err);
+                    reject(false);
                 } else {
                     resolve(true);
                 }
@@ -105,9 +105,9 @@ const updateStudentPractice = function (practices, stu_id) {
     })
 }
 
-const getStudentByUserAndStudentId = function (userId,stuId) {
+const getStudentByUserAndStudentId = function (userId, stuId) {
     return new Promise((resolve, reject) => {
-        STUDENTS_MODEL.find({User_ID:userId,_id:stuId}, function (err, stu) {
+        STUDENTS_MODEL.find({ User_ID: userId, _id: stuId }, function (err, stu) {
             if (err) {
                 reject(err);
             } else {
@@ -291,22 +291,27 @@ const getBeltsAverage = async function (userId) {
     map.set('blue', 0)
     map.set('brown', 0)
     map.set('black', 0)
-    let students = await getAllStudentsByUserID(userId);
+    let students;
+    try {
+        students = await getAllStudentsByUserID(userId);
+    } catch (e) {
+        return false;
+    }
     if (students.length > 0) {
         const totalStus = students.length
         students.forEach(stu => {
             map.set(stu.Belt, map.get(stu.Belt) + 1)
         });
         for (const [key, value] of map) {
-            map.set(key,((value/totalStus)*100).toFixed(2))
-          }
+            map.set(key, ((value / totalStus) * 100).toFixed(2))
+        }
     }
     return map;
 }
 
 const resetDb = async function (userId) {
     return new Promise((resolve, reject) => {
-        STUDENTS_MODEL.deleteMany({User_ID:userId}, function (err) {
+        STUDENTS_MODEL.deleteMany({ User_ID: userId }, function (err) {
             if (err) {
                 reject(err)
             } else {
@@ -342,12 +347,12 @@ const deleteActivity = async function (data) {
 }
 
 const getStudentActivities = async function (data) {
-    let student = await getStudentByUserAndStudentId(data.userId,data.stuId);
-    if(student.length>0){
+    let student = await getStudentByUserAndStudentId(data.userId, data.stuId);
+    if (student.length > 0) {
         return student[0].Activities;
-    }else{
+    } else {
         return [];
     }
 }
 
-module.exports = {getStudentByUserAndStudentId, getStudentActivities, deleteActivity, addNewActivity, resetDb, getBeltsAverage, getFewStudents, deleteFewStudentsByTeam, addOrUpdateStudentPhoto, getFewStudentsByPractice, updateStudentPractice, deletePracticeId, deletePracticeFromStudents, addPracticeToSingleStudent, addPracticeToStudents, changeStudentsTeam, deleteFewStudents, getStudentsByTeamId, addNewStudent, deleteStudentById, getAllStudentsByUserID, updateStudentTeamID, updateStudentSoftDetails, getStudent }
+module.exports = { getStudentByUserAndStudentId, getStudentActivities, deleteActivity, addNewActivity, resetDb, getBeltsAverage, getFewStudents, deleteFewStudentsByTeam, addOrUpdateStudentPhoto, getFewStudentsByPractice, updateStudentPractice, deletePracticeId, deletePracticeFromStudents, addPracticeToSingleStudent, addPracticeToStudents, changeStudentsTeam, deleteFewStudents, getStudentsByTeamId, addNewStudent, deleteStudentById, getAllStudentsByUserID, updateStudentTeamID, updateStudentSoftDetails, getStudent }

@@ -114,11 +114,29 @@ router.post('/addorupdatestudentphoto', async function (req, res, next) {
 });
 
 router.post('/getBeltsAverage', async function (req, res, next) {
-    let res1 = await StudentsBL.getBeltsAverage(req.body.userId);
-    if (!res1) {
-        return res.json(false)
+    let res1;
+    try {
+        res1 = await StudentsBL.getBeltsAverage(req.user.id);
+    } catch (e) {
+        res.status(500).json({
+            success: false,
+            message: 'Internal Server Error',
+            data: null
+        });
+    }
+    if (res1==false) {
+        res.status(500).json({
+            success: false,
+            message: 'Internal Server Error',
+            data: null
+        });
     } else {
-        return res.json([...res1])
+        res.status(200).json({
+            success: true,
+            message: 'Success',
+            data: [...res1]
+        });
+        // return res.json([...res1])
     }
 })
 

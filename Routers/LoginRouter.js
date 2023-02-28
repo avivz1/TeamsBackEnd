@@ -5,7 +5,7 @@ var StudentsBL = require('../BL/StudentsBL');
 var PracticeBL = require('../BL/PracticesBL');
 var TeamsBL = require('../BL/TeamsBL');
 const jwt = require('jsonwebtoken');
-const secret = 'mysecret';
+const secret = '78tghjsweaeojnvsr';
 
 
 

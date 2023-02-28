@@ -109,7 +109,7 @@ const getStudentsDistributionByTeam = async function (userId) {
     if (finishedArr.length > 0) {
         return finishedArr;
     } else {
-        return false;
+        return [];
     }
 }
 

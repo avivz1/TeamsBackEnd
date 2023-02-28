@@ -5,11 +5,11 @@ var UserBL = require('../BL/UsersBL');
 
 const getStudentAttendants = async function (userId, stuId) {
     // let stu = await StudentsBL.getStudent(stuId)getStudentByUserAndStudentId
-    let stuArr = await StudentsBL.getStudentByUserAndStudentId(userId,stuId)
+    let stuArr = await StudentsBL.getStudentByUserAndStudentId(userId, stuId)
     let stu = stuArr[0]
     let allPractices = await getAllPractices(userId)
     let stuPractices = stu.Practices;
-    
+
     let was = []
     let wasnt = []
     allPractices.filter(p => {
@@ -28,7 +28,7 @@ const getStudentAttendants = async function (userId, stuId) {
     let json = {
         presentPractices: was,
         notPresentPractices: wasnt,
-        activities:stu.Activities
+        activities: stu.Activities
     }
     return json;
 
@@ -48,7 +48,7 @@ const getPractice = function (id) {
 
 const getAllPractices = function (userId) {
     return new Promise((resolve, reject) => {
-        PRACTICES_MODEL.find({User_ID:userId}, function (err, practices) {
+        PRACTICES_MODEL.find({ User_ID: userId }, function (err, practices) {
             if (err) {
                 reject(false);
             } else {
@@ -71,7 +71,6 @@ const addPractice = function (practice, students) {
                 return obj;
             })
         }
-
         const p = new PRACTICES_MODEL({
             User_ID: practice.userid,
             Date: practice._date,
@@ -94,11 +93,15 @@ const addPractice = function (practice, students) {
 
 const deletePractice = function (id) {
     return new Promise((resolve, reject) => {
-        PRACTICES_MODEL.findByIdAndDelete(id, function (err) {
+        PRACTICES_MODEL.findByIdAndDelete(id, function (err, obj) {
             if (err) {
                 reject(false)
             } else {
-                resolve(true)
+                if (obj) {
+                    resolve(true)
+                } else {
+                    resolve(false)
+                }
             }
         })
     })
@@ -199,12 +202,12 @@ const updatePracticeTeam = function (p_id, team) {
     })
 }
 
-const updateTeamNameByTeamId = function (team){
-    return new Promise((resolve,reject)=>{
-        PRACTICES_MODEL.findOneAndUpdate({'Team.Team_ID':team._id},{'Team.Name':team.name},{new:true},function(err,doc){
-            if(err){
+const updateTeamNameByTeamId = function (team) {
+    return new Promise((resolve, reject) => {
+        PRACTICES_MODEL.findOneAndUpdate({ 'Team.Team_ID': team._id }, { 'Team.Name': team.name }, { new: true }, function (err, doc) {
+            if (err) {
                 reject(err)
-            }else{
+            } else {
                 resolve(doc)
             }
         })
@@ -336,8 +339,14 @@ const addOrRemovePracticeFromStudent = async function (chosenStudents, allStuden
 const getTotalDivision = async function (userId) {
     let _present = 0;
     let _notPresent = 0;
-    let allStudents = await StudentsBL.getAllStudentsByUserID(userId);
-    let allPractices = await getAllPractices(userId);
+    let allStudents;
+    let allPractices;
+    try {
+        allStudents = await StudentsBL.getAllStudentsByUserID(userId);
+        allPractices = await getAllPractices(userId);
+    } catch (e) {
+        return false;
+    }
     let studentObject = '';
 
     allPractices.forEach(p => {
@@ -401,7 +410,7 @@ const getTotalDivisionByMonth = async function (userId) {
                     arr[i] = (arr[i] + obj.result)
 
                 })
-                arr[i] = (arr[i] / monthArr.length).toFixed(0)+'%'
+                arr[i] = (arr[i] / monthArr.length).toFixed(0) + '%'
             }
 
         }
@@ -425,7 +434,7 @@ const deleteFewPractices = async function (practices) {
 
 const resetDb = async function (userId) {
     return new Promise((resolve, reject) => {
-        PRACTICES_MODEL.deleteMany({User_ID:userId}, function (err) {
+        PRACTICES_MODEL.deleteMany({ User_ID: userId }, function (err) {
             if (err) {
                 reject(err)
             } else {
@@ -437,4 +446,4 @@ const resetDb = async function (userId) {
 }
 
 
-module.exports = {updateTeamNameByTeamId, resetDb, deleteFewPractices, getTotalDivisionByMonth, getTotalDivision, getStudentAttendants, getPracticeAttendancePrecent, addOrRemovePracticeFromStudent, isStudentWasInPractice, getStudentsList, deleteFewStudentsFromPractices, updatePracticeTeam, deleteTeamFromPractice, updatePracticeStudent, deleteStudentFromPractice, updatePractice, deletePractice, getPractice, getAllPractices, addPractice }
+module.exports = { updateTeamNameByTeamId, resetDb, deleteFewPractices, getTotalDivisionByMonth, getTotalDivision, getStudentAttendants, getPracticeAttendancePrecent, addOrRemovePracticeFromStudent, isStudentWasInPractice, getStudentsList, deleteFewStudentsFromPractices, updatePracticeTeam, deleteTeamFromPractice, updatePracticeStudent, deleteStudentFromPractice, updatePractice, deletePractice, getPractice, getAllPractices, addPractice }

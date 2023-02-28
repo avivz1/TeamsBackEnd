@@ -5,22 +5,49 @@ var StudentsBL = require('../BL/StudentsBL');
 
 
 router.post('/deletepractice', async function (req, res, next) {
-    //delete the practice
-    let respo = await PracticeBL.deletePractice(req.body.practice._id)
+    let respo;
+    let res1;
+    try {
+        respo = await PracticeBL.deletePractice(req.body.practice._id)
+    } catch (e) {
+        res.status(500).json({
+            success: false,
+            message: 'Internal Server Error',
+            data: null
+        });
+    }
     if (respo == true) {
 
-        if (req.body.practice.Students.length > 0) {
-            let res1 = await StudentsBL.deletePracticeFromStudents(req.body.practice._id, req.body.practice.Students);
-            if (res1 == true) {
-                return res.json(true);
-            } else {
-                return res.json(false);
-            }
+        try {
+            res1 = await StudentsBL.deletePracticeFromStudents(req.body.practice._id, req.body.practice.Students);
+        } catch (e) {
+            res.status(500).json({
+                success: false,
+                message: 'Internal Server Error',
+                data: null
+            });
+        }
+        if (res1 == true) {
+            res.status(200).json({
+                success: true,
+                message: 'Success',
+                data: true
+            });
+        } else {
+            res.status(500).json({
+                success: false,
+                message: 'Internal Server Error',
+                data: null
+            });
         }
 
 
     } else {
-        return res.json(false);
+        res.status(404).json({
+            success: false,
+            message: 'Resource not found',
+            data: null
+        });
     }
 
 });
@@ -101,27 +128,59 @@ router.post('/getstudentlistforpratice', async function (req, res, next) {
 });
 
 router.post('/getTotalDivision', async function (req, res, next) {
-    console.log(req.user)
-    let resp = await PracticeBL.getTotalDivision(req.body.userId);
-    if (resp != undefined || resp != null) {
-        return res.json(resp)
+    let resp;
+    try {
+        resp = await PracticeBL.getTotalDivision(req.user.id);
+    } catch (e) {
+        res.status(500).json({
+            success: false,
+            message: 'Internal server error',
+            data: null
+        })
+    }
+    if (resp) {
+        res.status(200).json({
+            success: true,
+            message: 'Success',
+            data: resp
+        })
     } else {
-        return res.json(false)
+        res.status(500).json({
+            success: false,
+            message: 'Internal server error',
+            data: null
+        })
     }
 });
 
 router.post('/getTotalDivisionByMonth', async function (req, res, next) {
-    let resp = await PracticeBL.getTotalDivisionByMonth(req.body.userId);
-    if (resp != false) {
-        return res.json(resp)
-    } else {
-        return res.json(false)
+    let resp;
+    try {
+        resp = await PracticeBL.getTotalDivisionByMonth(req.user.id);
+    } catch (e) {
+        res.status(500).json({
+            success:false,
+            message:'Internal server error',
+            data:null
+        })
     }
+    if (resp == false) {
+        res.status(500).json({
+            success:false,
+            message:'Internal server error',
+            data:null
+        })
+    } else {
+        res.status(200).json({
+            success:true,
+            message:'Success',
+            data:resp
+        })    }
 });
 
 router.post('/removeFewPractices', async function (req, res, next) {
     let resp = await PracticeBL.deleteFewPractices(req.body.practices);
-    if (resp==true) {
+    if (resp == true) {
         return res.json(true)
     } else {
         return res.json(false)

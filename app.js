@@ -5,39 +5,40 @@ var logger = require('morgan');
 var cors = require('cors');
 
 const jwt = require('jsonwebtoken');
-const expressJwt = require('express-jwt');
-// const jwt = require('jsonwebtoken');
-
+// const expressJwt = require('express-jwt');
+const secret = '78tghjsweaeojnvsr';
 
 var usersRouter = require('./Routers/UsersRouter');
 var LoginRouter = require('./Routers/LoginRouter');
 var StudentsRouter = require('./Routers/StudentsRouter');
 var TeamsRouter = require('./Routers/TeamsRouter');
 var PracticeRouter = require('./Routers/PracticeRouter');
-
 var app = express();
 
 app.use((req, res, next) => {
     // check if the request is the login endpoint
-    if (req.path === '/login/signup' || req.path == '/login') {
+    if (req.path === '/login/signup' || req.path === '/login') {
         return next(); // skip middleware for login endpoint
-    }
-    const authHeader = req.headers.authorization;
-    if (authHeader) {
-        const token = authHeader.split(' ')[1];
+    } else {
 
-            jwt.verify(token, 'mysecret', (err, user) => {
+        const authHeader = req.headers.authorization;
+        if (authHeader) {
+            const token = authHeader.split(' ')[1];
+            jwt.verify(token, secret, (err, user) => {
                 if (err) {
+                    console.log('Authorization rejected')
                     return res.sendStatus(403);
                 }
                 req.user = user;
-
+                console.log('Authorization granted')
                 next();
             });
-        
-    } else {
-        res.sendStatus(401);
+
+        } else {
+            res.sendStatus(401);
+        }
     }
+
 });
 
 
