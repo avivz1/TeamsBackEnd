@@ -6,137 +6,284 @@ var PracticeBL = require('../BL/PracticesBL');
 var StudentsBL = require('../BL/StudentsBL')
 
 
-//return true
 router.post('/editteam', async function (req, response, next) {
-    let nameForEditStatus = await TeamsBL.isNameMatchToDBTeamName(req.body._id, req.body.name)
-    if (nameForEditStatus) {
-        let res = await TeamsBL.updateTeam(req.body);
-        if (res) {
-            return response.json(true)
-        } else {
-            return response.json(false)
-        }
-    } else {
-        let nameForAddStatus = await TeamsBL.isTeamNameAvailable(req.body.name);
-        if (nameForAddStatus) {
+    try {
+        let nameForEditStatus = await TeamsBL.isNameMatchToDBTeamName(req.body._id, req.body.name)
+        if (nameForEditStatus) {
             let res = await TeamsBL.updateTeam(req.body);
             if (res) {
-                return response.json(true)
+                res.status(200).json({
+                    success: true,
+                    message: 'Success',
+                    data: true
+                })
             } else {
-                return response.json(false)
+                res.status(404).json({
+                    success: false,
+                    message: 'Resource not found',
+                    data: false
+                })
             }
         } else {
-            return response.json(false)
+            let nameForAddStatus = await TeamsBL.isTeamNameAvailable(req.body.name);
+            if (nameForAddStatus) {
+                let res = await TeamsBL.updateTeam(req.body);
+                if (res) {
+                    res.status(200).json({
+                        success: true,
+                        message: 'Success',
+                        data: true
+                    })
+                } else {
+                    res.status(404).json({
+                        success: false,
+                        message: 'Resource not found',
+                        data: false
+                    })
+                }
+            } else {
+                res.status(404).json({
+                    success: false,
+                    message: 'Resource not found',
+                    data: false
+                })
+            }
         }
+    } catch (e) {
+        res.status(500).json({
+            success: false,
+            message: 'Internal server error',
+            data: null
+        })
     }
-
 })
 
 router.post('/addteam', async function (req, response, next) {
-    let nameStatus = await TeamsBL.isTeamNameAvailable(req.body.name)
-    if (nameStatus) {
-        let res = await TeamsBL.addTeam(req.body);
-        if (res) {
-            return response.json(true);
+    let nameStatus;
+    let addTeamStatus;
+    try {
+        nameStatus = await TeamsBL.isTeamNameAvailable(req.body.name)
+        if (nameStatus) {
+            addTeamStatus = await TeamsBL.addTeam(req.body);
         } else {
-            return response.json(false);
+            res.status(404).json({
+                success: false,
+                message: 'Resource not found',
+                data: false
+            })
         }
-    } else {
-        return response.json(false)
+    } catch (e) {
+        res.status(500).json({
+            success: false,
+            message: 'Internal server error',
+            data: null
+        })
     }
 
-})
-//return all teams
-router.post('/getalluserteams', async function (req, response, next) {
-    let res = await TeamsBL.getAllTeamsByUserId(req.body.userID);
-    if (res) {
-        return response.json(res);
+    if (addTeamStatus && nameStatus) {
+        res.status(200).json({
+            success: true,
+            message: 'Success',
+            data: true
+        })
     } else {
-        return response.json(false)
+        res.status(500).json({
+            success: false,
+            message: 'Internal server error',
+            data: null
+        })
+    }
+
+
+})
+
+router.post('/getalluserteams', async function (req, response, next) {
+    try {
+        let res = await TeamsBL.getAllTeamsByUserId(req.body.userID);
+        if (res) {
+            res.status(200).json({
+                success: true,
+                message: 'Success',
+                data: res
+            })
+        } else {
+            res.status(404).json({
+                success: false,
+                message: 'Resource not found',
+                data: false
+            })
+        }
+
+    } catch (e) {
+        res.status(500).json({
+            success: false,
+            message: 'Internal server error',
+            data: null
+        })
     }
 })
-//return team
+
 router.post('/getteam', async function (req, response, next) {
-    let res = await TeamsBL.getTeam(req.body.teamId);
-    if (res) {
-        return response.json(res);
-    } else {
-        return response.json("Error")
+    try {
+        let res = await TeamsBL.getTeam(req.body.teamId);
+        if (res) {
+            res.status(200).json({
+                success: true,
+                message: 'Success',
+                data: res
+            })
+        } else {
+            res.status(404).json({
+                success: false,
+                message: 'Resource not found',
+                data: false
+            })
+        }
+    } catch (e) {
+        res.status(500).json({
+            success: false,
+            message: 'Internal server error',
+            data: null
+        })
     }
 })
 
 router.post('/deleteteam', async function (req, response, next) {
-    let team = await TeamsBL.getTeam(req.body.teamId)
-    if (team) {
-
-        let deleteRes = await PracticeBL.deleteTeamFromPractice(team, req.body.userId)
-        if (deleteRes) {
-            let res = await TeamsBL.deleteTeam(req.body.teamId);
-            if (res) {
-                return response.json(res);
+    let team;
+    let deleteTeamFromPractice;
+    let deleteTeamStatus;
+    try {
+        team = await TeamsBL.getTeam(req.body.teamId)
+        if (team) {
+            deleteTeamFromPractice = await PracticeBL.deleteTeamFromPractice(team, req.body.userId)
+            if (deleteTeamFromPractice) {
+                deleteTeamStatus = await TeamsBL.deleteTeam(req.body.teamId);
             } else {
-                return response.json(false)
+                response.status(500).json({
+                    success: false,
+                    message: 'Internal Server Error',
+                    data: null
+                })
             }
         } else {
-            return response.json(false)
+            res.status(404).json({
+                success: false,
+                message: 'Resource not found',
+                data: false
+            })
         }
-    } else {
-        return response.json(false)
-    }
-})
-
-router.post('/getdistributionbyTeam', async function (req, response, next) {
-    let res;
-    try {
-        res = await TeamsBL.getStudentsDistributionByTeam(req.user.id);
     } catch (e) {
         response.status(500).json({
             success: false,
             message: 'Internal Server Error',
             data: null
         })
-        // response.json(false);
     }
-    if (res == false) {
+
+    let status = deleteTeamFromPractice && deleteTeamStatus;
+    if (status) {
+        response.status(200).json({
+            success: true,
+            message: 'Internal Server Error',
+            data: deleteTeamStatus
+        })
+    } else {
         response.status(500).json({
             success: false,
             message: 'Internal Server Error',
             data: null
-        });
-    } else {
-        response.status(200).json({
-            success: true,
-            message: 'Success',
-            data: res
-        });
-
+        })
     }
+})
+
+router.get('/getdistributionbyTeam', async function (req, response, next) {
+    let res;
+    try {
+        res = await TeamsBL.getStudentsDistributionByTeam(req.body.user.id);
+        if (res == false) {
+            response.status(500).json({
+                success: false,
+                message: 'Internal Server Error',
+                data: null
+            });
+        } else {
+            response.status(200).json({
+                success: true,
+                message: 'Success',
+                data: res
+            });
+            
+        }
+    } catch (e) {
+        response.status(500).json({
+            success: false,
+            message: 'Internal Server Error',
+            data: null
+        })
+    }
+
 
 })
 
 router.post('/removeFewTeams', async function (req, response, next) {
-    let res = await TeamsBL.deleteFewTeams(req.body.teams);
-    if (res != false) {
-        let res1 = await StudentsBL.deleteFewStudentsByTeam(req.body.teams, req.body.userID)
-        // let deletePracStatus = await PracticeBL.deleteFewStudentsFromPractices(students, req.body.userId);
+    try{
+        let res = await TeamsBL.deleteFewTeams(req.body.teams);
+        if (res != false) {
+            let res1 = await StudentsBL.deleteFewStudentsByTeam(req.body.teams, req.body.userID)
 
-        if (res1 != false) {
-            response.json(res);
+            if (res1 != false) {
+                response.status(200).json({
+                    success: true,
+                    message: 'Success',
+                    data: res
+                })
+            } else {
+                response.status(500).json({
+                    success: false,
+                    message: 'Internal server error',
+                    data: null
+                })  
+                      }
         } else {
-            response.json(false);
-        }
-    } else {
-        response.json(false);
+            response.status(500).json({
+                success: false,
+                message: 'Internal server error',
+                data: null
+            })        }
+    }catch(e){
+        response.status(500).json({
+            success: false,
+            message: 'Internal Server Error',
+            data: null
+        })
     }
+
+
 })
 
 router.post('/addorupdateteamphoto', async function (req, res, next) {
-    let res1 = await TeamsBL.addOrUpdateTeamPhoto(req.body.photo, req.body.teamID);
-    if (!res1) {
-        return res.json(false)
-    } else {
-        return res.json(res1)
-    }
+    try {
+        let res1 = await TeamsBL.addOrUpdateTeamPhoto(req.body.photo, req.body.teamID);
+        if (res1) {
+            response.status(200).json({
+                success: true,
+                message: 'Success',
+                data: res1
+            })      
+          } else {
+            response.status(500).json({
+                success: false,
+                message: 'Internal Server Error',
+                data: null
+            })        }
+
+    } catch (e) {
+        response.status(500).json({
+            success: false,
+            message: 'Internal Server Error',
+            data: null
+        })    }
+
 });
 
 

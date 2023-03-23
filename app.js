@@ -15,6 +15,15 @@ var TeamsRouter = require('./Routers/TeamsRouter');
 var PracticeRouter = require('./Routers/PracticeRouter');
 var app = express();
 
+
+let db = require('./Config/dataBase');
+app.use(logger('dev'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(cors());
+app.use(express.static(path.join(__dirname, 'public')));
+
 app.use((req, res, next) => {
     // check if the request is the login endpoint
     if (req.path === '/login/signup' || req.path === '/login') {
@@ -27,35 +36,30 @@ app.use((req, res, next) => {
             jwt.verify(token, secret, (err, user) => {
                 if (err) {
                     console.log('Authorization rejected')
-                    return res.sendStatus(403);
+                    // return res.sendStatus(403);
+                    return res.status(403).json({
+                        success: false,
+                        message: 'Authorization rejected',
+                        data: null
+                    });
                 }
-                req.user = user;
+                req.body.user = user;
                 console.log('Authorization granted')
                 next();
             });
 
         } else {
-            res.sendStatus(401);
+            // res.sendStatus(401);
+            return res.status(401).json({
+                success: false,
+                message: 'No Token Found',
+                data: null
+            });
         }
     }
 
 });
 
-
-
-
-
-
-
-
-
-let db = require('./Config/dataBase');
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(cors());
-app.use(express.static(path.join(__dirname, 'public')));
 
 // app.use(expressJwt({
 //     secret: 'your-secret-key',

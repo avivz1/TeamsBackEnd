@@ -6,34 +6,10 @@ var PracticeBL = require('../BL/PracticesBL');
 var TeamsBL = require('../BL/TeamsBL');
 const jwt = require('jsonwebtoken');
 const secret = '78tghjsweaeojnvsr';
+const expiresTime='1h'
 
 
 
-router.post('/getuserdetails', async function (req, res, next) {
-    try {
-        let userDetails = await usersBL.getUserById(req.body.userId);
-        if (userDetails) {
-            res.status(200).json({
-                success: true,
-                message: 'Success',
-                data: userDetails
-            });
-        } else {
-            res.status(404).json({
-                success: false,
-                message: 'User not found',
-                data: null
-            });
-        }
-
-    } catch (e) {
-        res.status(500).json({
-            success: false,
-            message: 'Internal server error',
-            data: null
-        });
-    }
-})
 
 router.post('/', async function (req, res, next) {
     let userID;
@@ -53,7 +29,7 @@ router.post('/', async function (req, res, next) {
             id: userID,
         };
         try {
-            userToken = jwt.sign(payload, secret, { expiresIn: '1h' });
+            userToken = jwt.sign(payload, secret, { expiresIn: expiresTime });
             res.status(200).json({
                 success: true,
                 message: 'Logged in',

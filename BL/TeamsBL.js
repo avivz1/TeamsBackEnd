@@ -8,7 +8,6 @@ const getAllTeamsByUserId = function (userId) {
             if (err) {
                 reject(false);
             } else {
-                // let arr = teams.filter(x => x.User_ID == userId);
                 resolve(teams);
             }
         })
@@ -58,7 +57,7 @@ const deleteTeam = function (id) {
     return new Promise((resolve, reject) => {
         TEAMS_MODEL.findByIdAndDelete(id, function (err) {
             if (err) {
-                reject(err);
+                reject(false);
             } else {
                 resolve(true);
             }

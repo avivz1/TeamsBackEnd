@@ -52,7 +52,6 @@ const getAllPractices = function (userId) {
             if (err) {
                 reject(false);
             } else {
-                // let practicesArr = practices.filter(p => p.User_ID == userid);
                 resolve(practices);
             }
         })

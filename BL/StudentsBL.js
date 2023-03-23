@@ -44,7 +44,6 @@ const getAllStudentsByUserID = function (userid) {
             if (err) {
                 reject(false);
             } else {
-                // let stuArr = students.filter(s => s.User_ID == userid);
                 resolve(students);
             }
         })
@@ -121,7 +120,7 @@ const getStudent = function (id) {
     return new Promise((resolve, reject) => {
         STUDENTS_MODEL.findById(id, function (err, stu) {
             if (err) {
-                reject(err);
+                reject(false);
             } else {
                 resolve(stu);
             }
@@ -261,12 +260,14 @@ const addOrUpdateStudentPhoto = async function (photo, stuId) {
 
 const deleteFewStudentsByTeam = async function (teams, userId) {
     let students = await getAllStudentsByUserID(userId)
-    let stude = students.filter(s => {
-        if (teams.includes(s.Team_ID.toString())) {
-            return s._id;
-        }
-    })
-    return deleteFewStudents(stude);
+    if (students.length > 0) {
+        let stude = students.filter(s => {
+            if (teams.includes(s.Team_ID.toString())) {
+                return s._id;
+            }
+        })
+        return deleteFewStudents(stude);
+    }
 
 }
 
@@ -324,11 +325,11 @@ const resetDb = async function (userId) {
 
 const addNewActivity = async function (data) {
     return new Promise((resolve, reject) => {
-        STUDENTS_MODEL.findByIdAndUpdate(data.stuId, { "$push": { "Activities": data.activity } }, function (err, data) {
+        STUDENTS_MODEL.findByIdAndUpdate(data.stuId, { "$push": { "Activities": data.activity } }, function (err, obj) {
             if (err) {
-                reject(err)
+                reject(false)
             } else {
-                resolve(data)
+                resolve(obj)
             }
         })
     })
