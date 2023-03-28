@@ -300,9 +300,22 @@ router.post('/getTotalDivision', async function (req, res, next) {
 });
 
 router.post('/getTotalDivisionByMonth', async function (req, res, next) {
-    let resp;
+    
     try {
-        resp = await PracticeBL.getTotalDivisionByMonth(req.user.id);
+        let resp = await PracticeBL.getTotalDivisionByMonth(req.body.user.id);
+        if (resp == false) {
+            res.status(500).json({
+                success: false,
+                message: 'Internal server error',
+                data: null
+            })
+        } else {
+            res.status(200).json({
+                success: true,
+                message: 'Success',
+                data: resp
+            })
+        }
     } catch (e) {
         res.status(500).json({
             success: false,
@@ -310,19 +323,7 @@ router.post('/getTotalDivisionByMonth', async function (req, res, next) {
             data: null
         })
     }
-    if (resp == false) {
-        res.status(500).json({
-            success: false,
-            message: 'Internal server error',
-            data: null
-        })
-    } else {
-        res.status(200).json({
-            success: true,
-            message: 'Success',
-            data: resp
-        })
-    }
+
 });
 
 router.post('/removeFewPractices', async function (req, res, next) {
