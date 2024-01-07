@@ -6,10 +6,10 @@ var PracticeBL = require('../BL/PracticesBL');
 var TeamsBL = require('../BL/TeamsBL');
 const jwt = require('jsonwebtoken');
 const secret = '78tghjsweaeojnvsr';
-const expiresTime='1h'
+const expiresTime=2
 
 
-
+  
 
 router.post('/', async function (req, res, next) {
     let userID;

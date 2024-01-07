@@ -295,7 +295,7 @@ router.post('/addorupdatestudentphoto', async function (req, res, next) {
     }
 });
 
-router.post('/getBeltsAverage', async function (req, res, next) {
+router.get('/getBeltsAverage', async function (req, res, next) {
     let res1;
     try {
         res1 = await StudentsBL.getBeltsAverage(req.body.user.id);

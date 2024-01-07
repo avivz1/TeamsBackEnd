@@ -299,7 +299,7 @@ router.post('/getTotalDivision', async function (req, res, next) {
 
 });
 
-router.post('/getTotalDivisionByMonth', async function (req, res, next) {
+router.get('/getTotalDivisionByMonth', async function (req, res, next) {
     
     try {
         let resp = await PracticeBL.getTotalDivisionByMonth(req.body.user.id);
