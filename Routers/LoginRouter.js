@@ -8,7 +8,9 @@ const jwt = require('jsonwebtoken');
 const secret = '78tghjsweaeojnvsr';
 const expiresTime=2
 
-
+router.post('/tokenvalidate',async function(req,res,next){
+    
+});
   
 
 router.post('/', async function (req, res, next) {
